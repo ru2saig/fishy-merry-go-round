@@ -1,4 +1,6 @@
+#include <cmath>
 #include <random>
+#include <iostream>
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
@@ -49,15 +51,19 @@ int main(void)
 
     // for(int i = 0; i < 100000; i++)
     // 	poses.emplace_back(Vector3 {uniform_dist(gen), uniform_dist(gen), uniform_dist(gen)}, uniform_dist(gen) * 10.0f);
+    Vector3 pos = Vector3 {0.0f, 0.0f, 0.0f};
 
     // Main game loop
     while (!WindowShouldClose()) {
 	// Update
 	UpdateCamera(&camera, CAMERA_FIRST_PERSON);
-
+	
+	
 	timeNow = (float) GetTime();
 	SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
 
+	//pos.x = 5*sin(timeNow * 0.5);
+	
 	// Draw
 	BeginDrawing();
 	ClearBackground(LIGHTGRAY);
@@ -67,9 +73,9 @@ int main(void)
 	DrawGrid(10, 1.0f);
 
 	BeginShaderMode(fishyShader);
-	DrawTexture3D(fish, Vector3 {0.0f, 0.0f, 0.0f}, 0.0f, Vector3 {0.0f, 1.0f, 0.0f}, 1.0f, WHITE);
+	DrawTexture3D(fish, pos, 0.0f, Vector3 {0.0f, 1.0f, 0.0f}, 1.0f, WHITE);
 	EndShaderMode();
-	
+
 	EndMode3D();
 
 	DrawFPS(10, 10);
