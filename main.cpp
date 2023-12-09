@@ -94,30 +94,27 @@ void DrawTexture3D(Texture2D texture, Vector3 position, float rotation, Vector3 
 
 
     rlPushMatrix();
+
+    // apply transformations
     rlTranslatef(position.x, position.y, position.z);
     rlRotatef(rotation, axis.x, axis.y, axis.z);
-
-    float x = 0.0f;
-    float y = 0.0f;
-    float z = 0.0f;
-
 
     rlBegin(RL_QUADS);
     rlColor4ub(tint.r, tint.g, tint.b, tint.a);
 
     // draw the front face
     rlNormal3f(0.0f, 0.0f, 1.0f);
-    rlTexCoord2f(0.0f, 0.0f); rlVertex3f(x - scale/2, y + scale/2, z);
-    rlTexCoord2f(0.0f, 1.0f); rlVertex3f(x - scale/2, y - scale/2, z);
-    rlTexCoord2f(1.0f, 1.0f); rlVertex3f(x + scale/2, y - scale/2, z);
-    rlTexCoord2f(1.0f, 0.0f); rlVertex3f(x + scale/2, y + scale/2, z);
+    rlTexCoord2f(0.0f, 0.0f); rlVertex3f(-scale/2, scale/2, 0.0f);
+    rlTexCoord2f(0.0f, 1.0f); rlVertex3f(-scale/2, -scale/2, 0.0f);
+    rlTexCoord2f(1.0f, 1.0f); rlVertex3f(scale/2, -scale/2, 0.0f);
+    rlTexCoord2f(1.0f, 0.0f); rlVertex3f(scale/2, scale/2, 0.0f);
 
     // draw the back face
     rlNormal3f(0.0f, 0.0f, -1.0f);
-    rlTexCoord2f(0.0f, 0.0f); rlVertex3f(x - scale/2, y + scale/2, z);
-    rlTexCoord2f(1.0f, 0.0f); rlVertex3f(x + scale/2, y + scale/2, z);
-    rlTexCoord2f(1.0f, 1.0f); rlVertex3f(x + scale/2, y - scale/2, z);
-    rlTexCoord2f(0.0f, 1.0f); rlVertex3f(x - scale/2, y - scale/2, z);
+    rlTexCoord2f(0.0f, 0.0f); rlVertex3f(-scale/2, scale/2, 0.0f);
+    rlTexCoord2f(1.0f, 0.0f); rlVertex3f(scale/2, scale/2, 0.0f);
+    rlTexCoord2f(1.0f, 1.0f); rlVertex3f(scale/2, -scale/2, 0.0f);
+    rlTexCoord2f(0.0f, 1.0f); rlVertex3f(-scale/2, -scale/2, 0.0f);
 
     rlEnd();
     rlPopMatrix();
