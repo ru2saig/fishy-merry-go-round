@@ -17,44 +17,44 @@
 // TODO 7: Add behaviours, and patterns to the fishies, varying the speeds, etc, and AI state machine!
 
 
-Mesh GenMeshCustom(float width, float length, int resX, int resZ, int flip)
+Mesh GenMeshPlaneXY(float width, float length, int resX, int resY)
 {
     Mesh mesh = { 0 };
     resX++;
-    resZ++;
+    resY++;
 
     // Vertices definition
-    int vertexCount = resX*resZ; // vertices get reused for the faces
+    int vertexCount = resX*resY; // vertices get reused for the faces
 
     Vector3 *vertices = (Vector3 *)RL_MALLOC(vertexCount*sizeof(Vector3));
-    for (int z = 0; z < resZ; z++)
+    for (int y = 0; y < resY; y++)
     {
         // [-length/2, length/2]
-        float zPos = ((float)z/(resZ - 1) - 0.5f)*length;
+        float yPos = ((float)y/(resY - 1) - 0.5f)*length;
         for (int x = 0; x < resX; x++)
         {
             // [-width/2, width/2]
             float xPos = ((float)x/(resX - 1) - 0.5f)*width;
-            vertices[x + z*resX] = (Vector3){ xPos, zPos, 0.0f };
+            vertices[x + y*resX] = Vector3 { xPos, yPos, 0.0f };
         }
     }
 
     // Normals definition
     Vector3 *normals = (Vector3 *)RL_MALLOC(vertexCount*sizeof(Vector3));
-    for (int n = 0; n < vertexCount; n++) normals[n] = (Vector3){ 0.0f, 0.0f, 1.0f };   // Vector3.up;
+    for (int n = 0; n < vertexCount; n++) normals[n] = Vector3 { 0.0f, 0.0f, 1.0f }; 
 
     // TexCoords definition
     Vector2 *texcoords = (Vector2 *)RL_MALLOC(vertexCount*sizeof(Vector2));
-    for (int v = 0; v < resZ; v++)
+    for (int v = 0; v < resY; v++)
     {
         for (int u = 0; u < resX; u++)
         {
-            texcoords[u + v*resX] = (Vector2){ (float)u/(resX - 1), (float)v/(resZ - 1) };
+            texcoords[u + v*resX] = Vector2 { (float)u/(resX - 1), (float)v/(resY - 1) };
         }
     }
 
     // Triangles definition (indices)
-    int numFaces = (resX - 1)*(resZ - 1);
+    int numFaces = (resX - 1)*(resY - 1);
     int *triangles = (int *)RL_MALLOC(numFaces*6*sizeof(int));
     int t = 0;
     for (int face = 0; face < numFaces; face++)
@@ -81,15 +81,15 @@ Mesh GenMeshCustom(float width, float length, int resX, int resZ, int flip)
     // Mesh vertices position array
     for (int i = 0; i < mesh.vertexCount; i++)
     {
-        mesh.vertices[3*i] = flip * vertices[i].x;
-        mesh.vertices[3*i + 1] = vertices[i].y;
+	mesh.vertices[3*i] = vertices[i].x;
+	mesh.vertices[3*i + 1] = vertices[i].y;
         mesh.vertices[3*i + 2] = vertices[i].z;
     }
 
     // Mesh texcoords array
     for (int i = 0; i < mesh.vertexCount; i++)
     {
-        mesh.texcoords[2*i] = flip * texcoords[i].x;
+        mesh.texcoords[2*i] = texcoords[i].x;
         mesh.texcoords[2*i + 1] = texcoords[i].y;
     }
 
@@ -116,7 +116,7 @@ Mesh GenMeshCustom(float width, float length, int resX, int resZ, int flip)
     return mesh;
 }
 
-    
+
 int main(void)
 {
     const int screenWidth = GetScreenWidth();
@@ -145,9 +145,8 @@ int main(void)
     fishMat.maps[MATERIAL_MAP_DIFFUSE].texture = fishTex;
     fishMat.shader = fishyShader;
 
-    Mesh frontMesh = GenMeshCustom(3.0, 3.0, 10, 10, 1);
-    Mesh backMesh = GenMeshCustom(3.0, 3.0, 10, 10, -1);
-        
+    Mesh fishMesh = GenMeshPlaneXY(4.0, 4.0, 10, 10);
+            
     SetTargetFPS(60);
     DisableCursor();
     ToggleFullscreen();
@@ -156,10 +155,12 @@ int main(void)
     std::uniform_real_distribution<float> uniform_dist(-20.0f, 20.0f);
     std::vector<std::pair<Vector3, float>> poses;
 
-    // for(int i = 0; i < 1; i++)
-    // 	poses.emplace_back(Vector3 {uniform_dist(gen), uniform_dist(gen), uniform_dist(gen)}, uniform_dist(gen) * 10.0f);
+    // for(int i = 0; i < 1000; i++)
+    //  	poses.emplace_back(Vector3 {uniform_dist(gen), uniform_dist(gen), uniform_dist(gen)}, uniform_dist(gen) * 10.0f);
     poses.emplace_back(Vector3 { 0.0f, 0.0f, 0.0f }, 0.0);
-    
+
+    rlDisableBackfaceCulling();
+            
     // Main game loop
     while (!WindowShouldClose()) {
 	// Update
@@ -178,12 +179,8 @@ int main(void)
 
 	for (auto pose : poses) {
 	    Matrix m = MatrixMultiply(MatrixTranslate(pose.first.x, pose.first.y, pose.first.z), MatrixRotate(Vector3 { 0.0, 1.0, 0.0 }, pose.second));
-	    
-	    DrawMesh(frontMesh, fishMat, m);
-	    DrawMesh(backMesh, fishMat, m);
-	    
+	    DrawMesh(fishMesh, fishMat, m);
 	}
-
 
 	EndMode3D();
 
