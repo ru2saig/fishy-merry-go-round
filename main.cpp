@@ -6,7 +6,8 @@
 #include <rlgl.h>
 #include <utility>
 
-// IN-PROGRESS 3: Find & load a fish texture, and translate the vertex shader from the
+// TODO: Drawing the fish using a mesh
+// TODO 3: Find & load a fish texture, and translate the vertex shader from the
 // docs! Add controls, for the uniforms and stuff (see shader comments).
 // TODO 4: Make the fish follow a circle, after making it into a nice class
 // TODO 5: Make multiple fish follow a circle, in a nice std::vector, with
@@ -15,14 +16,111 @@
 // TODO 6: Mod the fragment shader, to indicate the "depth" in the merry-go-round
 // TODO 7: Add behaviours, and patterns to the fishies, varying the speeds, etc, and AI state machine!
 
-void DrawTexture3D(Texture2D texture, Vector3 position,
-		   float rotation, Vector3 axis, float scale,
-		   Color tint);
+
+Mesh GenMeshCustom(float width, float length, int resX, int resZ, int flip)
+{
+    Mesh mesh = { 0 };
+    resX++;
+    resZ++;
+
+    // Vertices definition
+    int vertexCount = resX*resZ; // vertices get reused for the faces
+
+    Vector3 *vertices = (Vector3 *)RL_MALLOC(vertexCount*sizeof(Vector3));
+    for (int z = 0; z < resZ; z++)
+    {
+        // [-length/2, length/2]
+        float zPos = ((float)z/(resZ - 1) - 0.5f)*length;
+        for (int x = 0; x < resX; x++)
+        {
+            // [-width/2, width/2]
+            float xPos = ((float)x/(resX - 1) - 0.5f)*width;
+            vertices[x + z*resX] = (Vector3){ xPos, zPos, 0.0f };
+        }
+    }
+
+    // Normals definition
+    Vector3 *normals = (Vector3 *)RL_MALLOC(vertexCount*sizeof(Vector3));
+    for (int n = 0; n < vertexCount; n++) normals[n] = (Vector3){ 0.0f, 0.0f, 1.0f };   // Vector3.up;
+
+    // TexCoords definition
+    Vector2 *texcoords = (Vector2 *)RL_MALLOC(vertexCount*sizeof(Vector2));
+    for (int v = 0; v < resZ; v++)
+    {
+        for (int u = 0; u < resX; u++)
+        {
+            texcoords[u + v*resX] = (Vector2){ (float)u/(resX - 1), (float)v/(resZ - 1) };
+        }
+    }
+
+    // Triangles definition (indices)
+    int numFaces = (resX - 1)*(resZ - 1);
+    int *triangles = (int *)RL_MALLOC(numFaces*6*sizeof(int));
+    int t = 0;
+    for (int face = 0; face < numFaces; face++)
+    {
+        // Retrieve lower left corner from face ind
+        int i = face + face / (resX - 1);
+
+        triangles[t++] = i + resX;
+        triangles[t++] = i + 1;
+        triangles[t++] = i;
+
+        triangles[t++] = i + resX;
+        triangles[t++] = i + resX + 1;
+        triangles[t++] = i + 1;
+    }
+
+    mesh.vertexCount = vertexCount;
+    mesh.triangleCount = numFaces*2;
+    mesh.vertices = (float *)RL_MALLOC(mesh.vertexCount*3*sizeof(float));
+    mesh.texcoords = (float *)RL_MALLOC(mesh.vertexCount*2*sizeof(float));
+    mesh.normals = (float *)RL_MALLOC(mesh.vertexCount*3*sizeof(float));
+    mesh.indices = (unsigned short *)RL_MALLOC(mesh.triangleCount*3*sizeof(unsigned short));
+
+    // Mesh vertices position array
+    for (int i = 0; i < mesh.vertexCount; i++)
+    {
+        mesh.vertices[3*i] = flip * vertices[i].x;
+        mesh.vertices[3*i + 1] = vertices[i].y;
+        mesh.vertices[3*i + 2] = vertices[i].z;
+    }
+
+    // Mesh texcoords array
+    for (int i = 0; i < mesh.vertexCount; i++)
+    {
+        mesh.texcoords[2*i] = flip * texcoords[i].x;
+        mesh.texcoords[2*i + 1] = texcoords[i].y;
+    }
+
+    // Mesh normals array
+    for (int i = 0; i < mesh.vertexCount; i++)
+    {
+        mesh.normals[3*i] = normals[i].x;
+        mesh.normals[3*i + 1] = normals[i].y;
+        mesh.normals[3*i + 2] = normals[i].z;
+    }
+
+    // Mesh indices array initialization
+    for (int i = 0; i < mesh.triangleCount*3; i++) mesh.indices[i] = triangles[i];
+
+    RL_FREE(vertices);
+    RL_FREE(normals);
+    RL_FREE(texcoords);
+    RL_FREE(triangles);
+
+
+    // Upload vertex data to GPU (static mesh)
+    UploadMesh(&mesh, false);
+
+    return mesh;
+}
+
     
 int main(void)
 {
-    const int screenWidth = 1080;
-    const int screenHeight = 720;
+    const int screenWidth = GetScreenWidth();
+    const int screenHeight = GetScreenHeight();
 
     InitWindow(screenWidth, screenHeight, "fishy merry-go-round");
 
@@ -36,45 +134,56 @@ int main(void)
 
     Image fishImage = LoadImage("resources/longish-fish.png");
     ImageFlipVertical(&fishImage);
-    Texture2D fish = LoadTextureFromImage(fishImage);
+    Texture2D fishTex = LoadTextureFromImage(fishImage);
         
     Shader fishyShader = LoadShader("resources/shaders/fishymovement.vs", "resources/shaders/transparent.fs");
     int timeLoc = GetShaderLocation(fishyShader, "time");
     float timeNow = 0.0f;
     SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
 
+    Material fishMat = LoadMaterialDefault();
+    fishMat.maps[MATERIAL_MAP_DIFFUSE].texture = fishTex;
+    fishMat.shader = fishyShader;
+
+    Mesh frontMesh = GenMeshCustom(3.0, 3.0, 10, 10, 1);
+    Mesh backMesh = GenMeshCustom(3.0, 3.0, 10, 10, -1);
+        
     SetTargetFPS(60);
+    DisableCursor();
+    ToggleFullscreen();
+    
+    std::default_random_engine gen;
+    std::uniform_real_distribution<float> uniform_dist(-20.0f, 20.0f);
+    std::vector<std::pair<Vector3, float>> poses;
 
-    // std::default_random_engine gen;
-    // std::uniform_real_distribution<float> uniform_dist(-20.0f, 20.0f);
-    // std::vector<std::pair<Vector3, float>> poses;
-
-    // for(int i = 0; i < 100000; i++)
+    // for(int i = 0; i < 1; i++)
     // 	poses.emplace_back(Vector3 {uniform_dist(gen), uniform_dist(gen), uniform_dist(gen)}, uniform_dist(gen) * 10.0f);
-    Vector3 pos = Vector3 {0.0f, 0.0f, 0.0f};
-
+    poses.emplace_back(Vector3 { 0.0f, 0.0f, 0.0f }, 0.0);
+    
     // Main game loop
     while (!WindowShouldClose()) {
 	// Update
-	UpdateCamera(&camera, CAMERA_FIRST_PERSON);
+	UpdateCamera(&camera, CAMERA_FREE);
 	
 	
 	timeNow = (float) GetTime();
 	SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
 
-	//pos.x = 5*sin(timeNow * 0.5);
-	
 	// Draw
 	BeginDrawing();
 	ClearBackground(LIGHTGRAY);
 
 	BeginMode3D(camera);
+        DrawGrid(10, 1.0f);
 
-	DrawGrid(10, 1.0f);
+	for (auto pose : poses) {
+	    Matrix m = MatrixMultiply(MatrixTranslate(pose.first.x, pose.first.y, pose.first.z), MatrixRotate(Vector3 { 0.0, 1.0, 0.0 }, pose.second));
+	    
+	    DrawMesh(frontMesh, fishMat, m);
+	    DrawMesh(backMesh, fishMat, m);
+	    
+	}
 
-	BeginShaderMode(fishyShader);
-	DrawTexture3D(fish, pos, 0.0f, Vector3 { 0.0, 1.0, 0.0 }, 1.0, WHITE);
-	EndShaderMode();
 
 	EndMode3D();
 
@@ -85,47 +194,11 @@ int main(void)
     }
 
     // De-Initialization
-    UnloadTexture(fish);        // Unload texture
+    UnloadTexture(fishTex);        // Unload texture
     UnloadImage(fishImage);
     UnloadShader(fishyShader);
     
     CloseWindow();              // Close window and OpenGL context
 
     return 0;
-}
-
-void DrawTexture3D(Texture2D texture, Vector3 position, float rotation, Vector3 axis, float scale, Color tint)
-{
-
-    rlSetTexture(texture.id);
-
-
-    rlPushMatrix();
-
-    // apply transformations
-    rlTranslatef(position.x, position.y, position.z);
-    rlRotatef(rotation, axis.x, axis.y, axis.z);
-
-    rlBegin(RL_QUADS);
-    rlColor4ub(tint.r, tint.g, tint.b, tint.a);
-
-    // draw the front face
-    rlNormal3f(0.0f, 0.0f, 1.0f);
-    rlTexCoord2f(0.0f, 0.0f); rlVertex3f(-scale, -scale, 0.0f);
-    rlTexCoord2f(0.0f, 1.0f); rlVertex3f(-scale, scale, 0.0f);
-    rlTexCoord2f(1.0f, 1.0f); rlVertex3f(scale, scale, 0.0f);
-    rlTexCoord2f(1.0f, 0.0f); rlVertex3f(scale, -scale, 0.0f);
-
-    // draw the back face
-    rlNormal3f(0.0f, 0.0f, -1.0f);
-    rlTexCoord2f(0.0f, 0.0f); rlVertex3f(-scale, -scale, 0.0f);
-    rlTexCoord2f(1.0f, 0.0f); rlVertex3f(scale, -scale, 0.0f);
-    rlTexCoord2f(1.0f, 1.0f); rlVertex3f(scale, scale, 0.0f);
-    rlTexCoord2f(0.0f, 1.0f); rlVertex3f(-scale, scale, 0.0f);
-
-    
-    rlEnd();
-    rlPopMatrix();
-    
-    rlSetTexture(0);
 }
