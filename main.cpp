@@ -145,15 +145,15 @@ int main(void)
     fishMat.maps[MATERIAL_MAP_DIFFUSE].texture = fishTex;
     fishMat.shader = fishyShader;
 
-    Mesh fishMesh = GenMeshPlaneXY(4.0, 4.0, 10, 10);
+    Mesh fishMesh = GenMeshPlaneXY(4.0, 4.0, 20, 20);
             
     SetTargetFPS(60);
     DisableCursor();
     ToggleFullscreen();
     
-    std::default_random_engine gen;
-    std::uniform_real_distribution<float> uniform_dist(-20.0f, 20.0f);
-    std::vector<std::pair<Vector3, float>> poses;
+    // std::default_random_engine gen;
+    // std::uniform_real_distribution<float> uniform_dist(-20.0f, 20.0f);
+    std::vector<std::pair<Vector3, float>> poses; 
 
     // for(int i = 0; i < 1000; i++)
     //  	poses.emplace_back(Vector3 {uniform_dist(gen), uniform_dist(gen), uniform_dist(gen)}, uniform_dist(gen) * 10.0f);
