@@ -145,7 +145,7 @@ int main(void)
     fishMat.maps[MATERIAL_MAP_DIFFUSE].texture = fishTex;
     fishMat.shader = fishyShader;
 
-    Mesh fishMesh = GenMeshPlaneXY(4.0, 4.0, 20, 20);
+    Mesh fishMesh = GenMeshPlaneXY(1.0, 1.0, 20, 20);
             
     SetTargetFPS(60);
     DisableCursor();

@@ -10,11 +10,11 @@ in vec4 vertexColor;
 uniform mat4 mvp;
 uniform float time;
 uniform float swim_speed = 1.0;
-uniform float side_to_side = 0.5;
+uniform float side_to_side = 0.1;
 uniform float pivot = 1.0;
-uniform float wave = .8;
-uniform float waviness = 1.5;
-uniform float twist = .1;
+uniform float wave = .5;
+uniform float waviness = 3.0;
+uniform float twist = 0.1;
 uniform float mask_black = 0.0;
 uniform float mask_white = 1.0;
 
