@@ -6,10 +6,7 @@
 #include <rlgl.h>
 #include <utility>
 
-// DONE: Load fragment and vertex shaders
-// DONE 2: Create a function to put textures into 3D space, based on the way
-// billboard functions do it and the gists (see project TODO!)
-// TODO 3: Find & load a fish texture, and translate the vertex shader from the
+// IN-PROGRESS 3: Find & load a fish texture, and translate the vertex shader from the
 // docs! Add controls, for the uniforms and stuff (see shader comments).
 // TODO 4: Make the fish follow a circle, after making it into a nice class
 // TODO 5: Make multiple fish follow a circle, in a nice std::vector, with
@@ -18,9 +15,10 @@
 // TODO 6: Mod the fragment shader, to indicate the "depth" in the merry-go-round
 // TODO 7: Add behaviours, and patterns to the fishies, varying the speeds, etc, and AI state machine!
 
-
-void DrawTexture3D(Texture2D texture, Vector3 position, float rotation, Vector3 axis, float scale, Color tint);
-
+void DrawTexture3D(Texture2D texture, Vector3 position,
+		   float rotation, Vector3 axis, float scale,
+		   Color tint);
+    
 int main(void)
 {
     const int screenWidth = 1080;
@@ -30,14 +28,16 @@ int main(void)
 
     // Define the camera to look into our 3d world
     Camera camera = { 0 };
-    camera.position = Vector3 { 3.0f, 2.0f, 0.0f };    // Camera position
-    camera.target = Vector3 { 0.0f, 2.0f, 0.0f };      // Camera looking at point
+    camera.position = Vector3 { 5.0f, 2.0f, 0.0f };    // Camera position
+    camera.target = Vector3 { 0.0f, 0.0f, 0.0f };      // Camera looking at point
     camera.up = Vector3 { 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
 
-    Texture2D fish = LoadTexture("resources/longish-fish.png");    
-
+    Image fishImage = LoadImage("resources/longish-fish.png");
+    ImageFlipVertical(&fishImage);
+    Texture2D fish = LoadTextureFromImage(fishImage);
+        
     Shader fishyShader = LoadShader("resources/shaders/fishymovement.vs", "resources/shaders/transparent.fs");
     int timeLoc = GetShaderLocation(fishyShader, "time");
     float timeNow = 0.0f;
@@ -73,7 +73,7 @@ int main(void)
 	DrawGrid(10, 1.0f);
 
 	BeginShaderMode(fishyShader);
-	DrawTexture3D(fish, pos, 0.0f, Vector3 {0.0f, 1.0f, 0.0f}, 1.0f, WHITE);
+	DrawTexture3D(fish, pos, 0.0f, Vector3 { 0.0, 1.0, 0.0 }, 1.0, WHITE);
 	EndShaderMode();
 
 	EndMode3D();
@@ -86,6 +86,7 @@ int main(void)
 
     // De-Initialization
     UnloadTexture(fish);        // Unload texture
+    UnloadImage(fishImage);
     UnloadShader(fishyShader);
     
     CloseWindow();              // Close window and OpenGL context
@@ -110,18 +111,19 @@ void DrawTexture3D(Texture2D texture, Vector3 position, float rotation, Vector3 
 
     // draw the front face
     rlNormal3f(0.0f, 0.0f, 1.0f);
-    rlTexCoord2f(0.0f, 0.0f); rlVertex3f(-scale/2, scale/2, 0.0f);
-    rlTexCoord2f(0.0f, 1.0f); rlVertex3f(-scale/2, -scale/2, 0.0f);
-    rlTexCoord2f(1.0f, 1.0f); rlVertex3f(scale/2, -scale/2, 0.0f);
-    rlTexCoord2f(1.0f, 0.0f); rlVertex3f(scale/2, scale/2, 0.0f);
+    rlTexCoord2f(0.0f, 0.0f); rlVertex3f(-scale, -scale, 0.0f);
+    rlTexCoord2f(0.0f, 1.0f); rlVertex3f(-scale, scale, 0.0f);
+    rlTexCoord2f(1.0f, 1.0f); rlVertex3f(scale, scale, 0.0f);
+    rlTexCoord2f(1.0f, 0.0f); rlVertex3f(scale, -scale, 0.0f);
 
     // draw the back face
     rlNormal3f(0.0f, 0.0f, -1.0f);
-    rlTexCoord2f(0.0f, 0.0f); rlVertex3f(-scale/2, scale/2, 0.0f);
-    rlTexCoord2f(1.0f, 0.0f); rlVertex3f(scale/2, scale/2, 0.0f);
-    rlTexCoord2f(1.0f, 1.0f); rlVertex3f(scale/2, -scale/2, 0.0f);
-    rlTexCoord2f(0.0f, 1.0f); rlVertex3f(-scale/2, -scale/2, 0.0f);
+    rlTexCoord2f(0.0f, 0.0f); rlVertex3f(-scale, -scale, 0.0f);
+    rlTexCoord2f(1.0f, 0.0f); rlVertex3f(scale, -scale, 0.0f);
+    rlTexCoord2f(1.0f, 1.0f); rlVertex3f(scale, scale, 0.0f);
+    rlTexCoord2f(0.0f, 1.0f); rlVertex3f(-scale, scale, 0.0f);
 
+    
     rlEnd();
     rlPopMatrix();
     
