@@ -6,10 +6,7 @@
 #include <rlgl.h>
 #include <utility>
 
-// TODO: Drawing the fish using a mesh
-// TODO 3: Find & load a fish texture, and translate the vertex shader from the
-// docs! Add controls, for the uniforms and stuff (see shader comments).
-// TODO 4: Make the fish follow a circle, after making it into a nice class
+// IN-PROGRESS 4: Make the fish follow a circle, after making it into a nice class
 // TODO 5: Make multiple fish follow a circle, in a nice std::vector, with
 // uniqe::ptrs? Was that just for models? See how well they work, here though! I
 // might need it for the Shader and Texture. Test a 1000 fish (pick from a list of textures)
@@ -146,6 +143,7 @@ int main(void)
     fishMat.shader = fishyShader;
 
     Mesh fishMesh = GenMeshPlaneXY(1.0, 1.0, 20, 20);
+    Material defaultMaterial = LoadMaterialDefault();
             
     SetTargetFPS(60);
     DisableCursor();
@@ -157,9 +155,12 @@ int main(void)
 
     // for(int i = 0; i < 1000; i++)
     //  	poses.emplace_back(Vector3 {uniform_dist(gen), uniform_dist(gen), uniform_dist(gen)}, uniform_dist(gen) * 10.0f);
-    poses.emplace_back(Vector3 { 0.0f, 0.0f, 0.0f }, 0.0);
-
-    rlDisableBackfaceCulling();
+    Vector3 pos = Vector3Zero();
+    float timeScale = 10; // this can be used for the swim speed of the fish!
+    int a = 10;
+    int b = 10;
+    
+    rlDisableBackfaceCulling(); // required to render texture on both sides of the plane
             
     // Main game loop
     while (!WindowShouldClose()) {
@@ -170,6 +171,11 @@ int main(void)
 	timeNow = (float) GetTime();
 	SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
 
+	// follow along the ellipse, counter-clockwise
+	pos.x = a * cos(-timeNow/timeScale); 
+	pos.z = b * sin(-timeNow/timeScale);
+	Matrix m = MatrixMultiply(MatrixRotateY(PI/2 + timeNow/timeScale), MatrixTranslate(pos.x, pos.y, pos.z));
+
 	// Draw
 	BeginDrawing();
 	ClearBackground(LIGHTGRAY);
@@ -177,11 +183,10 @@ int main(void)
 	BeginMode3D(camera);
         DrawGrid(10, 1.0f);
 
-	for (auto pose : poses) {
-	    Matrix m = MatrixMultiply(MatrixTranslate(pose.first.x, pose.first.y, pose.first.z), MatrixRotate(Vector3 { 0.0, 1.0, 0.0 }, pose.second));
-	    DrawMesh(fishMesh, fishMat, m);
-	}
-
+	// orient the fish-plane towards the direction of movement. 
+	DrawMesh(fishMesh, fishMat, m);
+	DrawMesh(fishMesh, defaultMaterial, m);
+	
 	EndMode3D();
 
 	DrawFPS(10, 10);
@@ -192,6 +197,7 @@ int main(void)
 
     // De-Initialization
     UnloadTexture(fishTex);        // Unload texture
+    UnloadMaterial(fishMat);
     UnloadImage(fishImage);
     UnloadShader(fishyShader);
     
