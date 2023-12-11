@@ -5,14 +5,7 @@
 #include <raymath.h>
 #include <rlgl.h>
 #include <utility>
-
-// IN-PROGRESS 4: Make the fish follow a circle, after making it into a nice class
-// TODO 5: Make multiple fish follow a circle, in a nice std::vector, with
-// uniqe::ptrs? Was that just for models? See how well they work, here though! I
-// might need it for the Shader and Texture. Test a 1000 fish (pick from a list of textures)
-// TODO 6: Mod the fragment shader, to indicate the "depth" in the merry-go-round
-// TODO 7: Add behaviours, and patterns to the fishies, varying the speeds, etc, and AI state machine!
-
+#include <Fish.hpp>
 
 Mesh GenMeshPlaneXY(float width, float length, int resX, int resY)
 {
@@ -129,7 +122,7 @@ int main(void)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
 
-    Image fishImage = LoadImage("resources/longish-fish.png");
+    Image fishImage = LoadImage("resources/fish-1.png");
     ImageFlipVertical(&fishImage);
     Texture2D fishTex = LoadTextureFromImage(fishImage);
         
@@ -137,6 +130,11 @@ int main(void)
     int timeLoc = GetShaderLocation(fishyShader, "time");
     float timeNow = 0.0f;
     SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
+
+    int distLoc = GetShaderLocation(fishyShader, "dist");
+    float dist = 0.0f;
+    SetShaderValue(fishyShader, distLoc, &dist, SHADER_UNIFORM_FLOAT);
+
 
     Material fishMat = LoadMaterialDefault();
     fishMat.maps[MATERIAL_MAP_DIFFUSE].texture = fishTex;
@@ -161,7 +159,13 @@ int main(void)
     int b = 10;
     
     rlDisableBackfaceCulling(); // required to render texture on both sides of the plane
-            
+
+    printStuff();
+
+    // these require some tuning during the final application
+    float START_FADE = 100.0f;
+    float END_FADE = 1000.0f;
+    
     // Main game loop
     while (!WindowShouldClose()) {
 	// Update
@@ -176,6 +180,13 @@ int main(void)
 	pos.z = b * sin(-timeNow/timeScale);
 	Matrix m = MatrixMultiply(MatrixRotateY(PI/2 + timeNow/timeScale), MatrixTranslate(pos.x, pos.y, pos.z));
 
+	dist = Vector3DistanceSqr(pos, camera.position);
+        dist = END_FADE - std::min(std::max(START_FADE, dist), END_FADE); // lower the closer to the position
+
+        dist = (dist + START_FADE)/END_FADE; // map from [START_FADE, END_FADE] -> [0, 1]
+
+	SetShaderValue(fishyShader, distLoc, &dist, SHADER_UNIFORM_FLOAT);
+	
 	// Draw
 	BeginDrawing();
 	ClearBackground(LIGHTGRAY);
@@ -197,9 +208,9 @@ int main(void)
 
     // De-Initialization
     UnloadTexture(fishTex);        // Unload texture
+    UnloadShader(fishyShader);
     UnloadMaterial(fishMat);
     UnloadImage(fishImage);
-    UnloadShader(fishyShader);
     
     CloseWindow();              // Close window and OpenGL context
 

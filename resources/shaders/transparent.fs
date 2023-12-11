@@ -7,6 +7,7 @@ in vec4 fragColor;
 // Input uniform values
 uniform sampler2D texture0;
 uniform vec4 colDiffuse;
+uniform float dist;
 
 // Output fragment color
 out vec4 finalColor;
@@ -15,6 +16,6 @@ void main()
 {
     vec4 texel = texture(texture0, fragTexCoord); 
     if (texel.a == 0.0) discard;
-	
-    finalColor = texel * fragColor * colDiffuse;
+
+    finalColor = texel * vec4(fragColor.rgb * dist, 1.0) * colDiffuse;
 }
