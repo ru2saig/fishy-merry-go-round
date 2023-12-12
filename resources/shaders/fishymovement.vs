@@ -17,12 +17,16 @@ uniform float waviness = 3.0;
 uniform float twist = 0.1;
 uniform float mask_black = 0.0;
 uniform float mask_white = 1.0;
+uniform vec3 cameraPos;
 
 // Output vertex attributes (to fragment shader)
 out vec2 fragTexCoord;
 out vec4 fragColor;
+out float dist;
 
-vec3 vertexPos = vertexPosition;
+vec3 vertexPos = vertexPosition; // so that it can me modified
+const float START_FADE = 100.0f; // tweak these, depending on taste
+const float END_FADE = 1000.0f;
 
 void main()
 {
@@ -30,6 +34,11 @@ void main()
     fragTexCoord = vertexTexCoord;
     fragColor = vertexColor;
 
+    // used to fade the color inversely proportional to the distance from the camera
+    vec3 distanceVec = cameraPos - vertexPos;
+    dist = END_FADE - min(max(START_FADE, dot(distanceVec, distanceVec)), END_FADE);
+    dist = (dist + START_FADE)/END_FADE;
+    
     // implement fishy movement
     float t = time * swim_speed;
 

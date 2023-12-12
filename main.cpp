@@ -131,9 +131,9 @@ int main(void)
     float timeNow = 0.0f;
     SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
 
-    int distLoc = GetShaderLocation(fishyShader, "dist");
-    float dist = 0.0f;
-    SetShaderValue(fishyShader, distLoc, &dist, SHADER_UNIFORM_FLOAT);
+    int cameraPos = GetShaderLocation(fishyShader, "cameraPos");
+    Vector3 cPos = camera.position;
+    SetShaderValue(fishyShader, cameraPos, &cPos, SHADER_UNIFORM_VEC3);
 
 
     Material fishMat = LoadMaterialDefault();
@@ -149,18 +149,17 @@ int main(void)
     
     // std::default_random_engine gen;
     // std::uniform_real_distribution<float> uniform_dist(-20.0f, 20.0f);
-    std::vector<std::pair<Vector3, float>> poses; 
+    // std::vector<std::pair<Vector3, float>> poses; 
 
     // for(int i = 0; i < 1000; i++)
     //  	poses.emplace_back(Vector3 {uniform_dist(gen), uniform_dist(gen), uniform_dist(gen)}, uniform_dist(gen) * 10.0f);
+
     Vector3 pos = Vector3Zero();
     float timeScale = 10; // this can be used for the swim speed of the fish!
     int a = 10;
     int b = 10;
     
     rlDisableBackfaceCulling(); // required to render texture on both sides of the plane
-
-    printStuff();
 
     // these require some tuning during the final application
     float START_FADE = 100.0f;
@@ -171,22 +170,18 @@ int main(void)
 	// Update
 	UpdateCamera(&camera, CAMERA_FREE);
 	
-	
+	// set shader uniforms
 	timeNow = (float) GetTime();
+	cPos = camera.position;
+	
 	SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
-
+	SetShaderValue(fishyShader, cameraPos, &cPos, SHADER_UNIFORM_VEC3);
+	
 	// follow along the ellipse, counter-clockwise
 	pos.x = a * cos(-timeNow/timeScale); 
 	pos.z = b * sin(-timeNow/timeScale);
 	Matrix m = MatrixMultiply(MatrixRotateY(PI/2 + timeNow/timeScale), MatrixTranslate(pos.x, pos.y, pos.z));
 
-	dist = Vector3DistanceSqr(pos, camera.position);
-        dist = END_FADE - std::min(std::max(START_FADE, dist), END_FADE); // lower the closer to the position
-
-        dist = (dist + START_FADE)/END_FADE; // map from [START_FADE, END_FADE] -> [0, 1]
-
-	SetShaderValue(fishyShader, distLoc, &dist, SHADER_UNIFORM_FLOAT);
-	
 	// Draw
 	BeginDrawing();
 	ClearBackground(LIGHTGRAY);
@@ -208,7 +203,7 @@ int main(void)
 
     // De-Initialization
     UnloadTexture(fishTex);        // Unload texture
-    UnloadShader(fishyShader);
+    UnloadMesh(fishMesh);
     UnloadMaterial(fishMat);
     UnloadImage(fishImage);
     
