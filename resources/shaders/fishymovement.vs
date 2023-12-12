@@ -26,7 +26,7 @@ out float dist;
 
 vec3 vertexPos = vertexPosition; // so that it can me modified
 const float START_FADE = 100.0f; // tweak these, depending on taste
-const float END_FADE = 1000.0f;
+const float END_FADE = 200.0f;
 
 void main()
 {
@@ -39,13 +39,12 @@ void main()
     dist = END_FADE - min(max(START_FADE, dot(distanceVec, distanceVec)), END_FADE);
     dist = (dist + START_FADE)/END_FADE;
     
-    // implement fishy movement
     float t = time * swim_speed;
 
     // side to side movement
     vertexPos.z += cos(t) * side_to_side; 
     
-    // pivotey movement
+    // pivotey fish
     float pivot_angle = cos(t) * 0.1 * pivot;
     mat2 rotation_matrix = mat2(vec2(cos(pivot_angle), -sin(pivot_angle)), vec2(sin(pivot_angle), cos(pivot_angle)));
     vertexPos.xz *= rotation_matrix;

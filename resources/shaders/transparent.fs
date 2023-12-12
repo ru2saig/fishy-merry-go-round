@@ -9,7 +9,6 @@ in float dist;
 uniform sampler2D texture0;
 uniform vec4 colDiffuse;
 
-
 // Output fragment color
 out vec4 finalColor;
 
@@ -18,5 +17,5 @@ void main()
     vec4 texel = texture(texture0, fragTexCoord); 
     if (texel.a == 0.0) discard;
 
-    finalColor = texel * vec4(fragColor.rgb * dist, 1.0) * colDiffuse;
+    finalColor = texel * vec4(fragColor.rgb * 1.0, 1.0) * colDiffuse;
 }

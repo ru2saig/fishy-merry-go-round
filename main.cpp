@@ -122,27 +122,14 @@ int main(void)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
 
-    Image fishImage = LoadImage("resources/fish-1.png");
-    ImageFlipVertical(&fishImage);
-    Texture2D fishTex = LoadTextureFromImage(fishImage);
-        
     Shader fishyShader = LoadShader("resources/shaders/fishymovement.vs", "resources/shaders/transparent.fs");
     int timeLoc = GetShaderLocation(fishyShader, "time");
     float timeNow = 0.0f;
     SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
 
-    int cameraPos = GetShaderLocation(fishyShader, "cameraPos");
-    Vector3 cPos = camera.position;
-    SetShaderValue(fishyShader, cameraPos, &cPos, SHADER_UNIFORM_VEC3);
+    Fish fish = Fish(Vector2Zero(), Vector2 { 10.0f, 10.0f }, "resources/fish-1.png", fishyShader);
+    Fish fish2 = Fish(Vector2 {1.0f, 0.0f}, Vector2 { 10.0f, 10.0f }, "resources/fish-1.png", fishyShader);
 
-
-    Material fishMat = LoadMaterialDefault();
-    fishMat.maps[MATERIAL_MAP_DIFFUSE].texture = fishTex;
-    fishMat.shader = fishyShader;
-
-    Mesh fishMesh = GenMeshPlaneXY(1.0, 1.0, 20, 20);
-    Material defaultMaterial = LoadMaterialDefault();
-            
     SetTargetFPS(60);
     DisableCursor();
     ToggleFullscreen();
@@ -153,18 +140,9 @@ int main(void)
 
     // for(int i = 0; i < 1000; i++)
     //  	poses.emplace_back(Vector3 {uniform_dist(gen), uniform_dist(gen), uniform_dist(gen)}, uniform_dist(gen) * 10.0f);
-
-    Vector3 pos = Vector3Zero();
-    float timeScale = 10; // this can be used for the swim speed of the fish!
-    int a = 10;
-    int b = 10;
     
     rlDisableBackfaceCulling(); // required to render texture on both sides of the plane
 
-    // these require some tuning during the final application
-    float START_FADE = 100.0f;
-    float END_FADE = 1000.0f;
-    
     // Main game loop
     while (!WindowShouldClose()) {
 	// Update
@@ -172,16 +150,11 @@ int main(void)
 	
 	// set shader uniforms
 	timeNow = (float) GetTime();
-	cPos = camera.position;
-	
 	SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
-	SetShaderValue(fishyShader, cameraPos, &cPos, SHADER_UNIFORM_VEC3);
-	
-	// follow along the ellipse, counter-clockwise
-	pos.x = a * cos(-timeNow/timeScale); 
-	pos.z = b * sin(-timeNow/timeScale);
-	Matrix m = MatrixMultiply(MatrixRotateY(PI/2 + timeNow/timeScale), MatrixTranslate(pos.x, pos.y, pos.z));
 
+	fish.Update(timeNow);
+	fish2.Update(timeNow);
+	    
 	// Draw
 	BeginDrawing();
 	ClearBackground(LIGHTGRAY);
@@ -189,9 +162,8 @@ int main(void)
 	BeginMode3D(camera);
         DrawGrid(10, 1.0f);
 
-	// orient the fish-plane towards the direction of movement. 
-	DrawMesh(fishMesh, fishMat, m);
-	DrawMesh(fishMesh, defaultMaterial, m);
+	fish.Draw();
+	fish2.Draw();
 	
 	EndMode3D();
 
@@ -202,11 +174,6 @@ int main(void)
     }
 
     // De-Initialization
-    UnloadTexture(fishTex);        // Unload texture
-    UnloadMesh(fishMesh);
-    UnloadMaterial(fishMat);
-    UnloadImage(fishImage);
-    
     CloseWindow();              // Close window and OpenGL context
 
     return 0;
