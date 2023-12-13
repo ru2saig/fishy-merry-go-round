@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <raymath.h>
 
+// Could have just rotated the plane, in the transform, but that seemed too much of a pain! (it rhymes)
 Mesh Fish::GenMeshPlaneXY(float width, float length, int resX, int resY)
 {
     Mesh mesh = { 0 };
@@ -9,7 +10,7 @@ Mesh Fish::GenMeshPlaneXY(float width, float length, int resX, int resY)
     resY++;
 
     // Vertices definition
-    int vertexCount = resX*resY; // vertices get reused for the faces
+    int vertexCount = resX*resY; // Vertices get reused for the faces
 
     Vector3 *vertices = (Vector3 *)RL_MALLOC(vertexCount*sizeof(Vector3));
     for (int y = 0; y < resY; y++)
@@ -119,17 +120,21 @@ Fish::Fish(Vector2 offsets, Vector2 axes, std::string texturePath, Shader shader
 
 void Fish::Update(float timeNow)
 {
+    // Move along the (ellipsoid) path
     timeNow += offsets.x;
+
     pos.x = axes.x * cos(-timeNow/timeScale);
     pos.z = axes.y * sin(-timeNow/timeScale);
 
-    // orient the fish texture along the direction of movement
+    // Orient the fish texture along the direction of movement
+    // pos.y = offset.y (as it's 0)
     transform = MatrixMultiply(MatrixRotateY(PI/2 + timeNow/timeScale), MatrixTranslate(pos.x, pos.y + offsets.y, pos.z));
 }
 
 void Fish::Draw()
 {
     DrawMesh(fishMesh, fishMat, transform);
+    // A plane for debugging purposes
     //DrawMesh(fishMesh, LoadMaterialDefault(), transform);
 }
 

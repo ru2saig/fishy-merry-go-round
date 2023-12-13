@@ -1,10 +1,10 @@
 CXX=g++
-CXXFLAGS=-std=c++17 -pedantic -Wall -Iinclude
+CXXFLAGS=-std=c++20 -pedantic -Wall -Iinclude
 LDFLAGS=-lraylib -lpthread -ldl
 
 all: main.out
 
-main.out: main.o Fish.o
+main.out: main.o FishManager.o Fish.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 %.o : %.cpp

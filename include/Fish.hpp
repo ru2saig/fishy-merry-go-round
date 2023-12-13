@@ -6,12 +6,13 @@
 class Fish
 {
 public:
-    Fish(Vector2 offset, Vector2 axes, std::string texturePath, Shader shader, float timeScale=10.0f);
+    Fish(Vector2 offset, Vector2 axes, std::string texturePath, Shader shader, float timeScale);
     ~Fish();
 
     void Update(float timeNow);
     void Draw();
-    
+    Vector3 GetPosition() { return pos; }
+
 private:
     static Mesh GenMeshPlaneXY(float width, float length, int resX, int resY);
     float timeScale;

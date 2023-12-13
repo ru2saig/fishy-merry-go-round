@@ -1,3 +1,5 @@
+* Working
+Essentially, the scanner and aquarium communicate through a file watcher setup. The scanner saves processed fish textures into resources/, and the aquarium loads and renders any newly added ones. 
 
 * Credits
 resources/longish-fish.png:
