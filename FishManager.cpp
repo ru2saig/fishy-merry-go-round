@@ -55,8 +55,9 @@ void FishManager::Draw()
 void FishManager::AttemptToAddFish(std::string filePath)
 {
     bool found = true;
+    float timeScale = 20.0f;
     
-    Vector2 offset = {-(100.0f + (float) GetTime()), GetRandomValue(-30, 50)/10.0f};     
+    Vector2 offset = {-(timeScale + (float) GetTime()), GetRandomValue(-30, 50)/10.0f};     
     Vector2 axes = {13.0f, GetRandomValue(140, 150)/10.0f};
     Vector3 potPos = Vector3 (axes.x * cos(-1.0), axes.y * sin(-1.0), offset.y);
     	
@@ -68,11 +69,10 @@ void FishManager::AttemptToAddFish(std::string filePath)
 	    found = false;
 	    break; 
 	}
-
     }
 
     if (found) {
-	fishies.emplace_back(new Fish(offset, axes, filePath, fishyShader, 100.0f));
+	fishies.emplace_back(new Fish(offset, axes, filePath, fishyShader, timeScale));
 	if (pendingFish.contains(filePath)) // remove filePath if it was in pendingFish
 	    pendingFish.erase(filePath);
     } else
