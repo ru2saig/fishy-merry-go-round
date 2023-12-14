@@ -113,7 +113,7 @@ Fish::Fish(Vector2 offsets, Vector2 axes, std::string texturePath, Shader shader
     fishMat.maps[MATERIAL_MAP_DIFFUSE].texture = fishTex;
     fishMat.shader = shader;
 
-    fishMesh = GenMeshPlaneXY(1.0f, 1.0f, 20, 20);
+    fishMesh = GenMeshPlaneXY(1.0f, 1.0f, 5, 5); // TODO: Reduce these to 10? 15? 5?
 
     UnloadImage(fishImage);
 }

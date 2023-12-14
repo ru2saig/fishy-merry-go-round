@@ -5,7 +5,7 @@
 #include <raymath.h>
 #include <rlgl.h>
 
-// TODO: Add the scanner stuff!
+
 int main()
 {
     const int screenWidth = GetScreenWidth();
@@ -13,7 +13,6 @@ int main()
 
     InitWindow(screenWidth, screenHeight, "fishy merry-go-round");
 
-    // TODO: Adjust this!
     Camera camera = { 0 };
     camera.position = Vector3 { 25.0f, 0.0f, 0.0f };    // Camera position
     camera.target = Vector3 { 0.0f, 0.0f, 0.0f };      // Camera looking at point
@@ -31,7 +30,7 @@ int main()
     while (!WindowShouldClose()) {
 	// Update
 
-        UpdateCamera(&camera, CAMERA_FREE); // TODO: best look?
+        UpdateCameraPro(&camera, Vector3Zero(), Vector3Zero(), 0.0f);
 
 	fm.Update();
 

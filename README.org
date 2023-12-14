@@ -1,3 +1,32 @@
+* Dependency Installation
+The aquarium uses Raylib. Compile and install it (as a static library).
+
+#+BEGIN_SRC bash
+  sudo apt install build-essential git libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev libgflw3-dev
+  git clone https://github.com/raysan5/raylib.git raylib
+  cd raylib/src
+  make PLATFORM=PLATFORM_DESKTOP GRAPHICS=GRAPHICS_API_OPENGL_33 -j$(nproc)
+  sudo make install
+#+END_SRC
+
+* Compilation of Aquarium
+#+BEGIN_SRC bash
+  # from the root of the project
+  pwd # should be something like /path/to/fishy-merry-go-round/
+  make -j$(nproc)
+#+END_SRC
+
+* Running
+Run the aquarium software suite with: 
+#+BEGIN_SRC bash
+  # from the root of the project
+  MESH_GL_VERSION_OVERRIDE=3.3 ./main.out
+  python scanner.py --cam 2 --path resoures/textures/ # running the scanner application
+#+END_SRC
+
+Scanner Usage:
+Use the "s" key to take and save the image, "q" to quit running. Make sure the fish is entirely visible.
+
 * Working
 Essentially, the scanner and aquarium communicate through a file watcher setup. The scanner saves processed fish textures into resources/, and the aquarium loads and renders any newly added ones. 
 
