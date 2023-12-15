@@ -3,7 +3,6 @@
 // Input vertex attributes (from vertex shader)
 in vec2 fragTexCoord;
 in vec4 fragColor;
-in float dist;
 
 // Input uniform values
 uniform sampler2D texture0;
@@ -17,5 +16,5 @@ void main()
     vec4 texel = texture(texture0, fragTexCoord); 
     if (texel.a == 0.0) discard;
 
-    finalColor = texel * vec4(fragColor.rgb * 1.0, 1.0) * colDiffuse;
+    finalColor = texel * fragColor * colDiffuse;
 }

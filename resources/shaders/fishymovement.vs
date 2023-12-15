@@ -22,7 +22,7 @@ uniform vec3 cameraPos;
 // Output vertex attributes (to fragment shader)
 out vec2 fragTexCoord;
 out vec4 fragColor;
-out float dist;
+//out float dist;
 
 vec3 vertexPos = vertexPosition; // so that it can me modified
 const float START_FADE = 100.0f; // tweak these, depending on taste
@@ -35,9 +35,9 @@ void main()
     fragColor = vertexColor;
 
     // used to fade the color inversely proportional to the distance from the camera
-    vec3 distanceVec = cameraPos - vertexPos;
-    dist = END_FADE - min(max(START_FADE, dot(distanceVec, distanceVec)), END_FADE);
-    dist = (dist + START_FADE)/END_FADE;
+    // vec3 distanceVec = cameraPos - vertexPos;
+    // dist = END_FADE - min(max(START_FADE, dot(distanceVec, distanceVec)), END_FADE);
+    // dist = (dist + START_FADE)/END_FADE;
     
     float t = time * swim_speed;
 

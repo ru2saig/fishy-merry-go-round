@@ -14,7 +14,6 @@ public:
     Vector3 GetPosition() { return pos; }
 
 private:
-    static Mesh GenMeshPlaneXY(float width, float length, int resX, int resY);
     float timeScale;
     
     Vector2 axes;

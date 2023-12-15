@@ -57,7 +57,7 @@ void FishManager::AttemptToAddFish(std::string filePath)
     bool found = true;
     float timeScale = 20.0f;
     
-    Vector2 offset = {-(timeScale + (float) GetTime()), GetRandomValue(-30, 50)/10.0f};     
+    Vector2 offset = {-(timeScale + (float) GetTime()), GetRandomValue(-15, 40)/10.0f};
     Vector2 axes = {13.0f, GetRandomValue(140, 150)/10.0f};
     Vector3 potPos = Vector3 (axes.x * cos(-1.0), axes.y * sin(-1.0), offset.y);
     	
@@ -65,7 +65,7 @@ void FishManager::AttemptToAddFish(std::string filePath)
 	Vector3 pos = fish->GetPosition();
 	auto dist = Vector3Distance(pos, potPos);
 
-	if (dist <= 3.0f) {
+	if (dist <= 7.0f) {
 	    found = false;
 	    break; 
 	}

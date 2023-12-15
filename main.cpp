@@ -1,3 +1,4 @@
+#include <Environment.hpp>
 #include <Fish.hpp>
 #include <FishManager.hpp>
 #include <iostream>
@@ -21,6 +22,8 @@ int main()
     camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
 
     FishManager fm = FishManager();
+    Environment env = Environment::instance();
+        
     
     SetTargetFPS(60);
     DisableCursor();
@@ -31,23 +34,18 @@ int main()
 	// Update
 
         UpdateCameraPro(&camera, Vector3Zero(), Vector3Zero(), 0.0f);
-
+	//UpdateCamera(&camera, CAMERA_FREE);
+		
 	fm.Update();
-
-			
+	env.Update();
+				
 	// Draw
 	BeginDrawing();
 	ClearBackground(LIGHTGRAY);
 
 	BeginMode3D(camera);
-        DrawGrid(10, 1.0f);
 
-	// this "fades" further fish, couldn't get the shader to work, yet
-	rlPushMatrix();
-	rlRotatef(-90.0, 0.0, 0.0, 1.0);
-	DrawPlane(Vector3Zero(), Vector2 { 100.0f, 100.0f }, Color { 0, 0, 0, 50 }); // a dark, blueish gray
-	rlPopMatrix();
-	
+	env.Draw();
 	fm.Draw();
 
 	EndMode3D();

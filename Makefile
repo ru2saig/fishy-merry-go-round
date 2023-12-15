@@ -4,7 +4,7 @@ LDFLAGS=-lraylib -lpthread -ldl
 
 all: main.out
 
-main.out: main.o FishManager.o Fish.o
+main.out: main.o FishManager.o Fish.o Utility.o Environment.o
 	$(CXX) $(CXXFLAGS) $^ -o $@ $(LDFLAGS)
 
 %.o : %.cpp
