@@ -8,8 +8,10 @@ public:
     static Environment& instance();
     void Update();
     void Draw();
+    ~Environment();
 private:
     Environment();
+    void SetWiggle(float wiggle); // this shouldn't be how it works? Why is it doing this?
 
     Texture2D fg;
     Texture2D fgDynamic;
@@ -20,6 +22,8 @@ private:
 
     Shader staticShader;
     Shader wiggleShader;
+    // locations of uniforms in the wiggle.vs
+    int timeLoc;
 };
 
 #endif /* _ENVIRONMENT_HPP_ */

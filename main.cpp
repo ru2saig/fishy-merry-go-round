@@ -29,13 +29,14 @@ int main()
     DisableCursor();
     ToggleFullscreen();
 
+
     // Main game loop
     while (!WindowShouldClose()) {
 	// Update
 
         UpdateCameraPro(&camera, Vector3Zero(), Vector3Zero(), 0.0f);
 	//UpdateCamera(&camera, CAMERA_FREE);
-		
+			
 	fm.Update();
 	env.Update();
 				
@@ -53,10 +54,8 @@ int main()
 	DrawFPS(10, 10);
 
 	EndDrawing();
-
     }
 
-    // De-Initialization
     CloseWindow();              // Close window and OpenGL context
 
     return 0;
