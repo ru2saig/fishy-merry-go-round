@@ -20,7 +20,10 @@ FishManager::FishManager()
     lastTime = GetTime();
 }
 
-FishManager::~FishManager() {}
+FishManager::~FishManager()
+{
+    UnloadShader(fishyShader);
+}
 
 void FishManager::Update()
 {
@@ -28,17 +31,27 @@ void FishManager::Update()
     timeNow = (float) GetTime(); 
     SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
 
-    // attempt to add any pending fish
-    for(auto& pending: pendingFish)
-	AttemptToAddFish(pending);
-    
     for(auto &fish: fishies) // Update all the fish
 	fish->Update(timeNow);
 
-    if (GetTime() - lastTime > FishManager::timeToWait) { // Check for any new added files
+    // attempt to add any pending fish
+    for (auto iter = pendingFish.begin(); iter != pendingFish.end();) {
+	AttemptToAddFish(iter->first);
+
+        // remove any spawned fish
+	if (pendingFish.contains(iter->first) && iter->second)
+	    iter = pendingFish.erase(iter);
+	else
+	    iter++;
+    }
+
+    // Check for any new added files
+    if (GetTime() - lastTime > FishManager::timeToWait) { 
 	CheckForNewFiles();
 	lastTime = GetTime();
     }
+
+
 }
 
 void FishManager::Draw()
@@ -59,24 +72,26 @@ void FishManager::AttemptToAddFish(std::string filePath)
     
     Vector2 offset = {-(timeScale + (float) GetTime()), GetRandomValue(-15, 40)/10.0f};
     Vector2 axes = {13.0f, GetRandomValue(140, 150)/10.0f};
-    Vector3 potPos = Vector3 (axes.x * cos(-1.0), axes.y * sin(-1.0), offset.y);
-    	
+    Vector3 potPos = Vector3 (axes.x * cos(-1.0), offset.y, axes.y * sin(-1.0));
+
     for(auto& fish : fishies) { // Check for "collisions" with the other fishies
 	Vector3 pos = fish->GetPosition();
-	auto dist = Vector3Distance(pos, potPos);
-
-	if (dist <= 7.0f) {
+	auto dist = Vector2DistanceSqr(Vector2 {pos.y, pos.z}, Vector2{potPos.y, potPos.z});
+	// Need a better metric. Overlapping planes?
+	if (dist <= 260) {
 	    found = false;
 	    break; 
 	}
     }
 
+    
     if (found) {
 	fishies.emplace_back(new Fish(offset, axes, filePath, fishyShader, timeScale));
-	if (pendingFish.contains(filePath)) // remove filePath if it was in pendingFish
-	    pendingFish.erase(filePath);
+
+        if (pendingFish.contains(filePath)) // :D we found a place!
+	    pendingFish.at(filePath) = true;
     } else
-	pendingFish.insert(filePath); // :( Place not found
+	pendingFish.insert({filePath, false}); // :( Place not found
 }
 
 void FishManager::CheckForNewFiles()

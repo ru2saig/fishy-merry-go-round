@@ -26,10 +26,10 @@ void Fish::Update(float timeNow)
 
     pos.x = axes.x * cos(-timeNow/timeScale);
     pos.z = axes.y * sin(-timeNow/timeScale);
-
+    pos.y = offsets.y;
+    
     // Orient the fish texture along the direction of movement
-    // pos.y = offset.y (as it's 0)
-    transform = MatrixMultiply(MatrixRotateY(PI/2 + timeNow/timeScale), MatrixTranslate(pos.x, pos.y + offsets.y, pos.z));
+    transform = MatrixMultiply(MatrixRotateY(PI/2 + timeNow/timeScale), MatrixTranslate(pos.x, pos.y, pos.z));
 }
 
 void Fish::Draw()
@@ -40,7 +40,7 @@ void Fish::Draw()
 }
 
 Fish::~Fish()
-{
+{ // is one of these unloading the shader as well?
     UnloadTexture(fishTex);
     UnloadMesh(fishMesh);
     UnloadMaterial(fishMat);
