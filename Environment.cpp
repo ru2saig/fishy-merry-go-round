@@ -67,19 +67,19 @@ void Environment::Draw()
     // TODO: programmatically obtain scaling data, depending on screen
     // resolution
     BeginShaderMode(staticShader); // all the static stuff
-    DrawTexture3D(bg, Vector3 { -20.0f, 0.0f, 0.0f }, 90.0, Vector3 { 0.0f, 1.0f, 0.0f }, 38.0, 19, WHITE);
-    DrawTexture3D(mg, Vector3 { 17.9f, -1.2f, 0.0f }, 90.0, Vector3 { 0.0f, 1.0f, 0.0f }, 5.3, 2.15, WHITE);
-    DrawTexture3D(fg, Vector3 { 18.0f, -0.8f, 0.0f }, 90.0, Vector3 { 0.0f, 1.0f, 0.0f }, 5.3, 2.15, WHITE);
+    DrawTexture3D(bg, Vector3 { 0.0f, 0.0f, -20.0f }, 0.0, Vector3 { 0.0f, 1.0f, 0.0f }, 38.0, 19, WHITE);
+    DrawTexture3D(mg, Vector3 { 0.0f, -1.2f, 17.9f }, 0.0, Vector3 { 0.0f, 1.0f, 0.0f }, 5.3, 2.15, WHITE);
+    DrawTexture3D(fg, Vector3 { 0.0f, -0.8f, 18.0f }, 0.0, Vector3 { 0.0f, 1.0f, 0.0f }, 5.3, 2.15, WHITE);
     EndShaderMode();
 
     BeginShaderMode(wiggleShader);
-    DrawTexture3D(kelp, Vector3{-1.0f, -5.0f, 0.0f}, 90.0, Vector3{0.0f, 1.0f, 0.0f}, 21.0, 10.0, WHITE);    
-    DrawTexture3D(mgDynamic, Vector3{17.9f, -1.5f, 0.0f}, 90.0, Vector3{0.0f, 1.0f, 0.0f}, 5.3, 2.15, WHITE);
-    DrawTexture3D(fgDynamic, Vector3 { 18.0f, -0.8, 0.0f }, 90.0, Vector3 { 0.0f, 1.0f, 0.0f }, 5.3, 2.15, WHITE);
+    DrawTexture3D(kelp, Vector3{ 0.0f, -5.0f, -1.0f}, 0.0, Vector3{0.0f, 1.0f, 0.0f}, 21.0, 10.0, WHITE);    
+    DrawTexture3D(mgDynamic, Vector3{ 0.0f, -1.5f, 17.9f}, 0.0, Vector3{0.0f, 1.0f, 0.0f}, 5.3, 2.15, WHITE);
+    DrawTexture3D(fgDynamic, Vector3 { 0.0f, -0.8, 18.0f }, 0.0, Vector3 { 0.0f, 1.0f, 0.0f }, 5.3, 2.15, WHITE);
     EndShaderMode();
     
     rlPushMatrix();
-    rlRotatef(-90.0, 0.0, 0.0, 1.0);
+    rlRotatef(90.0, 90.0, 0.0, 1.0);
     // this "fades" further fish, couldn't get the shader to work, yet
     DrawPlane(Vector3Zero(), Vector2 { 100.0f, 100.0f }, Color { 0, 0, 0, 50 }); // a dark, blueish gray
     rlPopMatrix();

@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <Utility.hpp>
+#include <iostream>
 
 Fish::Fish(Vector2 offsets, Vector2 axes, std::string texturePath, Shader shader, float timeScale)
     : timeScale { timeScale }, axes { axes }, offsets { offsets }, pos { Vector3Zero() }
@@ -13,6 +14,10 @@ Fish::Fish(Vector2 offsets, Vector2 axes, std::string texturePath, Shader shader
     fishMat = LoadMaterialDefault();
     fishMat.maps[MATERIAL_MAP_DIFFUSE].texture = fishTex;
     fishMat.shader = shader;
+
+    pos.x = axes.x * cos(-offsets.x/timeScale);
+    pos.z = axes.y * sin(-offsets.x/timeScale);
+    pos.y = offsets.y;
 
     fishMesh = GenMeshPlaneXY(1.0f, 1.0f, 5, 5); // TODO: Reduce these to 10? 15? 5?
 
@@ -36,7 +41,7 @@ void Fish::Draw()
 {
     DrawMesh(fishMesh, fishMat, transform);
     // A plane for debugging purposes
-    //DrawMesh(fishMesh, LoadMaterialDefault(), transform);
+    // DrawMesh(fishMesh, LoadMaterialDefault(), transform); // yes, this is the fastest but least performant way to test stuff
 }
 
 Fish::~Fish()

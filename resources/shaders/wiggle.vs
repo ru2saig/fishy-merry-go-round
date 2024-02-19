@@ -27,7 +27,7 @@ void main()
     fragColor = vertexColor;
     float t = time * timeScale;
 
-    vertexPos.z += wiggleMag * sin(t * timeScale);
+    vertexPos.x += wiggleMag * sin(t * timeScale);
     vertexPos.y += -0.01 * sin(t * timeScale);
     vertexPos.y += -0.01 * cos(t * timeScale);
     

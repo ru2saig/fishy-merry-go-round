@@ -11,7 +11,7 @@ def extract_fish(image): # TODO: Have to config this stuff each time
     # image = cv2.imread("fish-1.png")  # capture from camera
     image = cv2.cvtColor(image, cv2.COLOR_BGR2BGRA)
     #image = cv2.resize(image, (int(image.shape[1]/2), int(image.shape[0]/2))) 
-    image = image[50:(image.shape[0] - 130), 80:(image.shape[1] - 210)]  # extract the ROI 
+    image = image[0:(image.shape[0] - 250), 120:(image.shape[1] - 250)]  # extract the ROI 
 
     # conversion to an inverted image for better contour detection
     img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)

@@ -9,14 +9,14 @@ The aquarium uses Raylib. Compile and install it (as a static library).
   sudo make install
 #+END_SRC
 
-* Compilation of Aquarium
+* TODO Compilation of Aquarium
 #+BEGIN_SRC bash
   # from the root of the project
   pwd # should be something like /path/to/fishy-merry-go-round/
   make -j$(nproc)
 #+END_SRC
 
-* Running
+* TODO Running
 Run the aquarium software suite with: 
 #+BEGIN_SRC bash
   # from the root of the project
@@ -24,15 +24,8 @@ Run the aquarium software suite with:
   python scanner.py --cam 2 --path resoures/textures/ # running the scanner application
 #+END_SRC
 
-Scanner Usage:
+** TODO Scanner Calibration & Usage
 Use the "s" key to take and save the image, "q" to quit running. Make sure the fish is entirely visible.
 
-* Working
-Essentially, the scanner and aquarium communicate through a file watcher setup. The scanner saves processed fish textures into resources/, and the aquarium loads and renders any newly added ones. 
+* TODO Credits
 
-* Credits
-resources/longish-fish.png:
-- https://paintingvalley.com/drawings/smallmouth-bass-drawing-13.png
-
-resources/mid-fish.png:
-- https://detiru.net/wp-content/uploads/2016/07/How-to-draw-a-fish-the-best-15.png

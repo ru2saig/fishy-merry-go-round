@@ -9,6 +9,7 @@
 
 std::string FishManager::fishDir = "resources/textures/";
 float FishManager::timeToWait = 1.0;
+int FishManager::maxAttempts = 7;
 
 FishManager::FishManager()
 {
@@ -34,9 +35,21 @@ void FishManager::Update()
     for(auto &fish: fishies) // Update all the fish
 	fish->Update(timeNow);
 
+    // TODO: make attempttoaddfish check if it's spawned and remove it? Unify all this
     // attempt to add any pending fish
+    int count = 0;
+    for (auto pending : pendingFish) {
+	AttemptToAddFish(pending.first);
+	count++;
+
+	if (count > maxAttempts)
+	    break;
+    }
+
+    // remove any spawned fish (STL?)
+
     for (auto iter = pendingFish.begin(); iter != pendingFish.end();) {
-	AttemptToAddFish(iter->first);
+	// AttemptToAddFish(iter->first);
 
         // remove any spawned fish
 	if (pendingFish.contains(iter->first) && iter->second)
@@ -68,17 +81,17 @@ void FishManager::Draw()
 void FishManager::AttemptToAddFish(std::string filePath)
 {
     bool found = true;
-    float timeScale = 20.0f;
-    
-    Vector2 offset = {-(timeScale + (float) GetTime()), GetRandomValue(-15, 40)/10.0f};
-    Vector2 axes = {13.0f, GetRandomValue(140, 150)/10.0f};
-    Vector3 potPos = Vector3 (axes.x * cos(-1.0), offset.y, axes.y * sin(-1.0));
+    Vector2 offsets = {0.0f, GetRandomValue(-15, 60)/10.0f};
+    Vector2 axes = {GetRandomValue(90, 100)/10.0f, GetRandomValue(135, 150)/10.0f};
+    Vector3 potPos = Vector3 (axes.x, offsets.y, axes.y);
 
     for(auto& fish : fishies) { // Check for "collisions" with the other fishies
 	Vector3 pos = fish->GetPosition();
-	auto dist = Vector2DistanceSqr(Vector2 {pos.y, pos.z}, Vector2{potPos.y, potPos.z});
-	// Need a better metric. Overlapping planes?
-	if (dist <= 260) {
+	auto dist = Vector3DistanceSqr(pos, potPos);
+	
+        if (dist < 250.0f) {
+
+
 	    found = false;
 	    break; 
 	}
@@ -86,7 +99,8 @@ void FishManager::AttemptToAddFish(std::string filePath)
 
     
     if (found) {
-	fishies.emplace_back(new Fish(offset, axes, filePath, fishyShader, timeScale));
+	offsets.x = (float) -GetTime();
+	fishies.emplace_back(new Fish(offsets, axes, filePath, fishyShader, 20.0f));
 
         if (pendingFish.contains(filePath)) // :D we found a place!
 	    pendingFish.at(filePath) = true;
