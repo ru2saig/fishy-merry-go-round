@@ -1,7 +1,6 @@
 #include <Environment.hpp>
 #include <Fish.hpp>
 #include <FishManager.hpp>
-#include <iostream>
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>

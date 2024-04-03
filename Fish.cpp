@@ -15,8 +15,8 @@ Fish::Fish(Vector2 offsets, Vector2 axes, std::string texturePath, Shader shader
     fishMat.maps[MATERIAL_MAP_DIFFUSE].texture = fishTex;
     fishMat.shader = shader;
 
-    pos.x = axes.x * cos(-offsets.x/timeScale);
-    pos.z = axes.y * sin(-offsets.x/timeScale);
+    pos.x = axes.x * cos(-offsets.x * timeScale);
+    pos.z = axes.y * sin(-offsets.x * timeScale);
     pos.y = offsets.y;
 
     fishMesh = GenMeshPlaneXY(1.0f, 1.0f, 5, 5); // TODO: Reduce these to 10? 15? 5?
@@ -24,24 +24,24 @@ Fish::Fish(Vector2 offsets, Vector2 axes, std::string texturePath, Shader shader
     UnloadImage(fishImage);
 }
 
-void Fish::Update(float timeNow)
+void Fish::Update()
 {
     // Move along the (ellipsoid) path
-    timeNow += offsets.x;
+    offsets.x += 0.0005;
 
-    pos.x = axes.x * cos(-timeNow/timeScale);
-    pos.z = axes.y * sin(-timeNow/timeScale);
+    pos.x = axes.x * cos(-offsets.x * timeScale);
+    pos.z = axes.y * sin(-offsets.x * timeScale);
     pos.y = offsets.y;
     
     // Orient the fish texture along the direction of movement
-    transform = MatrixMultiply(MatrixRotateY(PI/2 + timeNow/timeScale), MatrixTranslate(pos.x, pos.y, pos.z));
+    transform = MatrixMultiply(MatrixRotateY(PI/2 + offsets.x * timeScale), MatrixTranslate(pos.x, pos.y, pos.z));
 }
 
 void Fish::Draw()
 {
     DrawMesh(fishMesh, fishMat, transform);
     // A plane for debugging purposes
-    // DrawMesh(fishMesh, LoadMaterialDefault(), transform); // yes, this is the fastest but least performant way to test stuff
+    //DrawMesh(fishMesh, LoadMaterialDefault(), transform); // yes, this is the fastest but least performant way to test stuff
 }
 
 Fish::~Fish()
