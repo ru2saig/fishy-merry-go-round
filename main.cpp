@@ -14,7 +14,7 @@ int main()
     InitWindow(screenWidth, screenHeight, "fishy merry-go-round");
 
     Camera camera = { 0 };
-    camera.position = Vector3 { 0.0f, 0.0f, 25.0f };    // Camera position
+    camera.position = Vector3 { 25.0f, 0.0f, 0.0f };    // Camera position
     camera.target = Vector3 { 0.0f, 0.0f, 0.0f };      // Camera looking at point
     camera.up = Vector3 { 0.0f, 1.0f, 0.0f };          // Camera up vector (rotation towards target)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
@@ -31,11 +31,9 @@ int main()
 
     // Main game loop
     while (!WindowShouldClose()) {
-	// Update
 
+      // Update
         UpdateCameraPro(&camera, Vector3Zero(), Vector3Zero(), 0.0f);
-	//UpdateCamera(&camera, CAMERA_FREE);
-			
 	fm.Update();
 	env.Update();
 				
@@ -44,7 +42,7 @@ int main()
 	ClearBackground(LIGHTGRAY);
 
 	BeginMode3D(camera);
-
+		
 	env.Draw();
 	fm.Draw();
 

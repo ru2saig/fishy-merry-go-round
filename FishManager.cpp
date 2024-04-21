@@ -1,6 +1,7 @@
 #include <Fish.hpp>
 #include <FishManager.hpp>
 #include <filesystem>
+#include <iostream> // TODO: REMOVE THIS
 #include <string>
 #include <raylib.h>
 #include <raymath.h>
@@ -8,6 +9,7 @@
 
 std::string FishManager::fishDir = "resources/textures/";
 float FishManager::timeToWait = 1.0;
+int FishManager::attempts = 5;
 
 FishManager::FishManager()
 {
@@ -31,24 +33,16 @@ void FishManager::Update()
     SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
 
     for(auto &fish: fishies) // Update all the fish
-	fish->Update();
+	fish->Update(timeNow);
 
-    // attempt to add any pending fish
-    for (auto pending : pendingFish) {
-	auto ret = AttemptToAddFish(pending.first);
-	if (!ret) { 
-	    // TODO: remove the fish from pendingFish
-	}
-    }
+    // Attempt to add any pending fish
+    for (auto pending = pendingFish.begin(); pending != pendingFish.end(); ) {
+	auto ret = AttemptToAddFish(*pending);
 
-    for (auto iter = pendingFish.begin(); iter != pendingFish.end();) {
-	// AttemptToAddFish(iter->first);
-
-        // remove any spawned fish
-	if (pendingFish.contains(iter->first) && iter->second)
-	    iter = pendingFish.erase(iter);
-	else
-	    iter++;
+        if (!ret) {  // Fishey found a place!
+	    pending = pendingFish.erase(pending);
+	} else // Can always try again!
+	    pending++;
     }
 
     // Check for any new added files
@@ -57,7 +51,7 @@ void FishManager::Update()
 	lastTime = GetTime();
     }
 
-
+    std::cout << fishies.size() <<  std::endl;
 }
 
 void FishManager::Draw()
@@ -73,30 +67,30 @@ void FishManager::Draw()
 int FishManager::AttemptToAddFish(std::string filePath)
 {
     bool found = true;
-    Vector2 offsets = { 0, GetRandomValue(-15, 60)/10.0f };
-    Vector2 axes = { GetRandomValue(135, 150)/10.0f, GetRandomValue(90, 100)/10.0f };
-    Vector3 potPos = Vector3 (axes.x, offsets.y, axes.y);
+    Vector2 offsets, axes;
+    
+    for (int attempt = 0; attempt < FishManager::attempts; attempt++) {
+	offsets = { 0.0f, GetRandomValue(-18, 55)/10.0f };
+	axes = { GetRandomValue(90, 100)/10.0f, GetRandomValue(140, 150)/10.0f };
+	Vector3 potPos = Vector3 (axes.x, offsets.y, 0.0f); // axes.x * cos(t), offsets.y, axes.y * sin(t); simplified for t=0.0f
 
-    for(auto& fish : fishies) { // Check for "collisions" with the other fishies
-	Vector3 pos = fish->GetPosition();
-	auto dist = Vector3DistanceSqr(pos, potPos);
-	
-        if (dist < 113.0f) {
-	    found = false;
-	    break; 
+	for(auto& fish : fishies) { // Check for "collisions" with the existing fishies
+	    Vector3 pos = fish->GetPosition();
+	    auto dist = Vector3DistanceSqr(pos, potPos); 
+
+	    if (dist < 6.0f) {
+		found = false;
+		break;
+	    }
 	}
     }
     
     if (found) {
-	fishies.emplace_back(new Fish(offsets, axes, filePath, fishyShader, 1.0f));
-
-        if (pendingFish.contains(filePath)) // :D we found a place, so clear it!
-	    pendingFish.at(filePath) = true; 	    // TODO: remove the fish from pendingFish
+	offsets.x = -GetTime();
+	fishies.emplace_back(new Fish(offsets, axes, filePath, fishyShader, 0.02f ));
 	return 0;
     }
 
-    // TODO: remove the fish from pendingFish
-    pendingFish.insert({filePath, false}); // :( Place not found
     return 1;
 }
 
@@ -106,7 +100,9 @@ void FishManager::CheckForNewFiles()
 	if (!fishFiles.contains(file.path().string())) {
 	    auto texturePath = file.path().string();
 	    fishFiles.insert(texturePath);
-	    pendingFish.insert({texturePath, false});
+
+	    if (texturePath.find(".gitignore") == std::string::npos)
+		pendingFish.insert(texturePath);
 	}
     }
 }

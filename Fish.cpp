@@ -2,7 +2,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <Utility.hpp>
-#include <iostream>
+#include <numbers>
 
 Fish::Fish(Vector2 offsets, Vector2 axes, std::string texturePath, Shader shader, float timeScale)
     : timeScale { timeScale }, axes { axes }, offsets { offsets }, pos { Vector3Zero() }
@@ -24,24 +24,27 @@ Fish::Fish(Vector2 offsets, Vector2 axes, std::string texturePath, Shader shader
     UnloadImage(fishImage);
 }
 
-void Fish::Update()
+void Fish::Update(float t)
 {
     // Move along the (ellipsoid) path
-    offsets.x += 0.0005;
+    t += offsets.x;
 
-    pos.x = axes.x * cos(-offsets.x * timeScale);
-    pos.z = axes.y * sin(-offsets.x * timeScale);
+    pos.x = axes.x * cos(-t * timeScale);
+    pos.z = axes.y * sin(-t * timeScale);
     pos.y = offsets.y;
     
     // Orient the fish texture along the direction of movement
-    transform = MatrixMultiply(MatrixRotateY(PI/2 + offsets.x * timeScale), MatrixTranslate(pos.x, pos.y, pos.z));
+    transform = MatrixMultiply(MatrixRotateY(PI/2 + t * timeScale), MatrixTranslate(pos.x, pos.y, pos.z));
 }
 
 void Fish::Draw()
 {
     DrawMesh(fishMesh, fishMat, transform);
-    // A plane for debugging purposes
-    //DrawMesh(fishMesh, LoadMaterialDefault(), transform); // yes, this is the fastest but least performant way to test stuff
+
+    // A plane and the path for debugging purposes
+    //DrawMesh(fishMesh, LoadMaterialDefault(), transform); // Yes, this is the fastest but least performant way to test stuff
+    //for (double i = 0.0, step = 0.1; i < std::numbers::pi_v<double> * 2; i += step)
+    //DrawSphere({ axes.x * (float) cos(i), offsets.y, axes.y * (float) sin(i)}, 0.1, BLACK);
 }
 
 Fish::~Fish()

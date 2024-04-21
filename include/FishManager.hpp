@@ -26,9 +26,10 @@ private:
     double lastTime; // last time when the fishDir was checked
     static std::string fishDir; // where processing fish files are stored
     static float timeToWait; // how long to wait until checked for new files
+    static int attempts; // spawm attempts
     
     std::vector<std::unique_ptr<Fish>> fishies; // unique::ptr is required or seg faults occur
-    std::unordered_map<std::string, bool> pendingFish; // a list of fish that need to be loaded, as filePath, loadStatus. 
+    std::unordered_set<std::string> pendingFish; // a list of fish that need to be loaded, as filePath, loadStatus. 
     Shader fishyShader;
     int timeLoc; // These make it easier to update stuff, could do without
     float timeNow;

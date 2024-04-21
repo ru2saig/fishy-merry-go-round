@@ -9,7 +9,7 @@ public:
     Fish(Vector2 offset, Vector2 axes, std::string texturePath, Shader shader, float timeScale);
     ~Fish();
 
-    void Update();
+    void Update(float t);
     void Draw();
     Vector3 GetPosition() { return pos; }
 
