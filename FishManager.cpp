@@ -1,7 +1,6 @@
 #include <Fish.hpp>
 #include <FishManager.hpp>
 #include <filesystem>
-#include <iostream> // TODO: REMOVE THIS
 #include <string>
 #include <raylib.h>
 #include <raymath.h>
@@ -11,7 +10,8 @@ std::string FishManager::fishDir = "resources/textures/";
 float FishManager::timeToWait = 1.0;
 int FishManager::attempts = 5;
 
-FishManager::FishManager()
+FishManager::FishManager(float minDist)
+    : minDist ( minDist )
 {
     fishyShader = LoadShader("resources/shaders/fishymovement.vs", "resources/shaders/transparent.fs");
     timeLoc = GetShaderLocation(fishyShader, "time");
@@ -36,7 +36,8 @@ void FishManager::Update()
 	fish->Update(timeNow);
 
     // Attempt to add any pending fish
-    for (auto pending = pendingFish.begin(); pending != pendingFish.end(); ) {
+    int pendingMax = 10;
+    for (auto pending = pendingFish.begin(); pendingMax > 0 && pending != pendingFish.end(); pendingMax--) {
 	auto ret = AttemptToAddFish(*pending);
 
         if (!ret) {  // Fishey found a place!
@@ -51,7 +52,6 @@ void FishManager::Update()
 	lastTime = GetTime();
     }
 
-    std::cout << fishies.size() <<  std::endl;
 }
 
 void FishManager::Draw()
@@ -78,7 +78,7 @@ int FishManager::AttemptToAddFish(std::string filePath)
 	    Vector3 pos = fish->GetPosition();
 	    auto dist = Vector3DistanceSqr(pos, potPos); 
 
-	    if (dist < 6.0f) {
+	    if (dist < minDist) {
 		found = false;
 		break;
 	    }
