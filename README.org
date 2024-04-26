@@ -17,7 +17,9 @@ The aquarium uses Raylib. Compile and install it (as a static library).
 #+END_SRC
 
 * TODO Running
-** TODO With Scanner
+** With Scanner
+With a scanner, print out a few copies of the templates found under resources/templates/. 
+
 Run the aquarium software suite with: 
 #+BEGIN_SRC bash
   # from the root of the project
@@ -25,10 +27,9 @@ Run the aquarium software suite with:
   python scanner.py --cam 2 --path resoures/textures/ # running the scanner application
 #+END_SRC
 
-A maximum of about 200 fish are visible well, on a 16:10 screen. Too many, and it can become too crowded!
+For calibration, run scanner.py and adjust lights in the scanner box until the entire fish is visible in the preview window. Use the "s" key to take and save the image. The scanned fish will be visible in the screen, given sufficient space and time for it to load. It's usually instantaneous. To exit the scanning, hit "q".
 
-*** TODO Scanner Calibration & Usage
-Use the "s" key to take and save the image, "q" to quit running. Make sure the fish is entirely visible.
+A maximum of about 200 fish are visible well, on a 16:10 screen. Too many, and it can become quite the school!
 
 ** With Pre-Made Artwork
 Check releases for the files, unzip it under resources/textures, and watch as the fish start spawning, one-by-one!
@@ -39,14 +40,12 @@ Here are the steps for that:
   unzip /path/to/MakerFaire23-<choose which one>.zip -d resources/textures/
 
   # now, start with:
-  ./main.out
+  MESH_GL_VERSION_OVERRIDE=3.3  ./main.out
 #+END_SRC
 
-* Fish Files, and Templates
+* Artwork
 All of the art is licensed under CC BY-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/4.0/. 
 
-The templates were created by TODO-ATTRIBUTION. 
+The fish templates were created by [[https://www.instagram.com/kottimira_worma/][@kottimira_worma]].
 
-The fish were coloured in by the visitors of MakerFaire Hyderabad 2023. One love <3 to everyone who contributed a fish (or two).
-
-* TODO Credits
+ All the files in the zip's were templates coloured in by the visitors of MakerFaire Hyderabad 2023. One love <3 to everyone who contributed a fish (or two).
