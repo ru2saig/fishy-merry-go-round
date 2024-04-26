@@ -36,8 +36,8 @@ int main(int argc, char** argv)
     // Main game loop
     while (!WindowShouldClose()) {
 
-      // Update
-        UpdateCameraPro(&camera, Vector3Zero(), Vector3Zero(), 0.0f);
+	// Update
+	UpdateCameraPro(&camera, Vector3Zero(), Vector3Zero(), 0.0f);
 	fm.Update();
 	env.Update();
 				
