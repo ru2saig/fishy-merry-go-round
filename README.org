@@ -17,6 +17,7 @@ The aquarium uses Raylib. Compile and install it (as a static library).
 #+END_SRC
 
 * TODO Running
+** TODO With Scanner
 Run the aquarium software suite with: 
 #+BEGIN_SRC bash
   # from the root of the project
@@ -24,8 +25,28 @@ Run the aquarium software suite with:
   python scanner.py --cam 2 --path resoures/textures/ # running the scanner application
 #+END_SRC
 
-** TODO Scanner Calibration & Usage
+A maximum of about 200 fish are visible well, on a 16:10 screen. Too many, and it can become too crowded!
+
+*** TODO Scanner Calibration & Usage
 Use the "s" key to take and save the image, "q" to quit running. Make sure the fish is entirely visible.
 
-* TODO Credits
+** With Pre-Made Artwork
+Check releases for the files, unzip it under resources/textures, and watch as the fish start spawning, one-by-one!
 
+Here are the steps for that:
+#+BEGIN_SRC bash
+  # from root of the project
+  unzip /path/to/MakerFaire23-<choose which one>.zip -d resources/textures/
+
+  # now, start with:
+  ./main.out
+#+END_SRC
+
+* Fish Files, and Templates
+All of the art is licensed under CC BY-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/4.0/. 
+
+The templates were created by TODO-ATTRIBUTION. 
+
+The fish were coloured in by the visitors of MakerFaire Hyderabad 2023. One love <3 to everyone who contributed a fish (or two).
+
+* TODO Credits
