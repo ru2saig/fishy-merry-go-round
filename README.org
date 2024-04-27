@@ -1,8 +1,12 @@
+* Screenshots
+**crickets**
+
 * Dependency Installation
-The aquarium uses Raylib. Compile and install it (as a static library).
+The aquarium uses Raylib. Compile and install it (as a static library). For the latest information, check https://github.com/raysan5/raylib?tab=readme-ov-file#build-and-installation.
 
 #+BEGIN_SRC bash
   sudo apt install build-essential git libasound2-dev libx11-dev libxrandr-dev libxi-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxinerama-dev libgflw3-dev # Debian based systems
+
   git clone https://github.com/raysan5/raylib.git raylib
   cd raylib/src
   make PLATFORM=PLATFORM_DESKTOP GRAPHICS=GRAPHICS_API_OPENGL_33 -j$(nproc)
