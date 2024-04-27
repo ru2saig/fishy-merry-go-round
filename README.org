@@ -9,14 +9,16 @@ The aquarium uses Raylib. Compile and install it (as a static library).
   sudo make install
 #+END_SRC
 
-* TODO Compilation of Aquarium
+* Compilation of Aquarium
 #+BEGIN_SRC bash
-  # from the root of the project
-  pwd # should be something like /path/to/fishy-merry-go-round/
+  git clone https://github.com/ru2saig/fishy-merry-go-round
+  cd fishy-merry-go-round
+
   make -j$(nproc)
+  # binary is main.out
 #+END_SRC
 
-* TODO Running
+* Running
 ** With Scanner
 With a scanner, print out a few copies of the templates found under resources/templates/. 
 
@@ -32,7 +34,7 @@ For calibration, run scanner.py and adjust lights in the scanner box until the e
 A maximum of about 200 fish are visible well, on a 16:10 screen. Too many, and it can become quite the school!
 
 ** With Pre-Made Artwork
-Check releases for the files, unzip it under resources/textures, and watch as the fish start spawning, one-by-one!
+Check release for the zip files; choose one and unzip the files under resources/textures/. Watch as the fish start spawning, one-by-one!
 
 Here are the steps for that:
 #+BEGIN_SRC bash
@@ -49,3 +51,7 @@ All of the art is licensed under CC BY-SA 4.0. To view a copy of this license, v
 The fish templates were created by [[https://www.instagram.com/kottimira_worma/][@kottimira_worma]].
 
  All the files in the zip's were templates coloured in by the visitors of MakerFaire Hyderabad 2023. One love <3 to everyone who contributed a fish (or two).
+
+* Credits
+T-Works for hosting the event and exhibit, and everyone who participated. Y'all are the best.
+
