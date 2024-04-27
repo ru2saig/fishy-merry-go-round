@@ -9,7 +9,9 @@ The aquarium uses Raylib. Compile and install it (as a static library).
   sudo make install
 #+END_SRC
 
-* Compilation of Aquarium
+Make sure you have a C/C++ compiler that supports at least C++20.
+
+* Compilation
 #+BEGIN_SRC bash
   git clone https://github.com/ru2saig/fishy-merry-go-round
   cd fishy-merry-go-round
@@ -44,6 +46,9 @@ Here are the steps for that:
   # now, start with:
   MESH_GL_VERSION_OVERRIDE=3.3  ./main.out
 #+END_SRC
+
+** Post
+Simply remove everything under resources/textures/ (zip them up somewhere) and run it again. 
 
 * Artwork
 All of the art is licensed under CC BY-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/4.0/. 
