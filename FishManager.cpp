@@ -1,11 +1,13 @@
 #include <Fish.hpp>
 #include <FishManager.hpp>
+#include <algorithm>
 #include <filesystem>
 #include <Utility.hpp>
 #include <string>
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
+#include <cmath>
 
 float FishManager::timeToWait = 1.0;
 int FishManager::attempts = 5;
@@ -29,6 +31,13 @@ FishManager::~FishManager()
     UnloadShader(fishyShader);
 }
 
+void FishManager::updateMinDist()
+{
+    auto no = fishies.size();
+
+    minDist = std::clamp(15.0/(1 + std::exp(no/40.0 - 0.5)), 1.2, 10.0);
+}
+
 void FishManager::Update()
 {
     // Update the shader uniforms
@@ -43,6 +52,7 @@ void FishManager::Update()
     for (auto pending = pendingFish.begin(); pendingMax > 0 && pending != pendingFish.end(); pendingMax--) {
 	auto ret = AttemptToAddFish(*pending);
 
+	// Yes, this is luck-based, wanted average O(1) for the set operations
         if (!ret) {  // Fishey found a place!
 	    pending = pendingFish.erase(pending);
 	} else // Can always try again!
@@ -54,7 +64,8 @@ void FishManager::Update()
 	CheckForNewFiles();
 	lastTime = GetTime();
     }
-
+    
+    updateMinDist();
 }
 
 void FishManager::Draw()

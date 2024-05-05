@@ -20,19 +20,21 @@ public:
     void Draw();
 
 private:
-    // these variables are used in CheckForNewfile
-    std::unordered_set<std::string> fishFiles; // files (fingers crossed) loaded
-    double lastTime; // last time when the fishDir was checked
-    static float timeToWait; // how long to wait until checked for new files
-    static int attempts; // spawm attempts
-
-    // this stuff is used for adding new fish
+    void updateMinDist(); // Dynamically minDist, according to the number of fish on screen
+    
+    std::unordered_set<std::string> fishFiles; // Files (fingers crossed) loaded
     std::vector<std::unique_ptr<Fish>> fishies; // unique::ptr is required or seg faults occur
-    std::unordered_set<std::string> pendingFish; // a list of fish that need to be loaded, as filePath, loadStatus. 
+    std::unordered_set<std::string> pendingFish; // A list of fish that need to be loaded, as filePath, loadStatus.
+
     Shader fishyShader;
-    int timeLoc; // These make it easier to update stuff, could do without
+
+    static float timeToWait; // How long to wait until checked for new files
+    static int attempts; // Spawm attempts
+    
+    double lastTime; // Last time when the fishDir was checked
+    int timeLoc;
     float timeNow;
-    float minDist;
+    float minDist; // The shortest distance from all other fish, so that a fish can be spawned
 };
 
 #endif /* _FISHMANAGER_HPP_ */
