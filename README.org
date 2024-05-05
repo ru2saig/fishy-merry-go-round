@@ -30,7 +30,8 @@ With a scanner, print out a few copies of the templates found under resources/te
 
 Run the aquarium software suite with: 
 #+BEGIN_SRC bash
-  # from the root of the project
+  cd /path/to/fishy-merry-go-round/
+
   MESH_GL_VERSION_OVERRIDE=3.3 ./main.out
   python scanner.py --cam 2 --path resoures/textures/ # running the scanner application
 #+END_SRC
@@ -44,15 +45,18 @@ Check release for the zip files; choose one and unzip the files under resources/
 
 Here are the steps for that:
 #+BEGIN_SRC bash
-  # from root of the project
+  cd /path/to/fishy-merry-go-round/
+
   unzip /path/to/MakerFaire23-<choose which one>.zip -d resources/textures/
 
   # now, start with:
-  MESH_GL_VERSION_OVERRIDE=3.3  ./main.out
+  export MESH_GL_VERSION_OVERRIDE=3.3 # if using a Raspberry Pi
+  ./main.out # MUST run from the root of the source code
+
 #+END_SRC
 
-** Post
-Simply remove everything under resources/textures/ (zip them up somewhere) and run it again. 
+** Too Many Fish!
+Simply remove everything under resources/textures/ (zip them up somewhere) and run it again. TODO: Working on a better system for this, which automagically clears the fish.
 
 * Artwork
 All of the art is licensed under CC BY-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/4.0/. 

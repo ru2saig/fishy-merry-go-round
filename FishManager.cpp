@@ -1,19 +1,22 @@
 #include <Fish.hpp>
 #include <FishManager.hpp>
 #include <filesystem>
+#include <Utility.hpp>
 #include <string>
 #include <raylib.h>
 #include <raymath.h>
 #include <rlgl.h>
 
-std::string FishManager::fishDir = "resources/textures/";
 float FishManager::timeToWait = 1.0;
 int FishManager::attempts = 5;
 
-FishManager::FishManager(float minDist)
-    : minDist ( minDist )
+FishManager::FishManager()
+    : minDist { 10.0 }
 {
-    fishyShader = LoadShader("resources/shaders/fishymovement.vs", "resources/shaders/transparent.fs");
+    auto vertexShaderPath = Utility::shaderDir / "fishymovement.vs";
+    auto fragShaderPath = Utility::shaderDir / "transparent.fs";
+
+    fishyShader = LoadShader(vertexShaderPath.c_str(), fragShaderPath.c_str());
     timeLoc = GetShaderLocation(fishyShader, "time");
     timeNow = (float) GetTime();
     SetShaderValue(fishyShader, timeLoc, &timeNow, SHADER_UNIFORM_FLOAT);
@@ -96,7 +99,7 @@ int FishManager::AttemptToAddFish(std::string filePath)
 
 void FishManager::CheckForNewFiles()
 {
-    for (auto& file: std::filesystem::directory_iterator(FishManager::fishDir)) {
+    for (auto& file: std::filesystem::directory_iterator(Utility::fishDir)) {
 	if (!fishFiles.contains(file.path().string())) {
 	    auto texturePath = file.path().string();
 	    fishFiles.insert(texturePath);

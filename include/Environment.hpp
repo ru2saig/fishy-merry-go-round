@@ -3,7 +3,6 @@
 #include <raylib.h>
 #include <array>
 #include <string>
-#include <filesystem>
 
 class Environment {
 public:
@@ -24,10 +23,6 @@ private:
 	fgDynamic,
 	TEXTURES
     };
-
-    // TODO: What about installing this? What ever would become of these?
-    const std::filesystem::path texDir = std::filesystem::current_path().concat("/resources/bg/");
-    const std::filesystem::path shaderDir = std::filesystem::current_path().concat("/resources/shaders/");
 
     std::array<std::string, static_cast<int>(TextureIndex::TEXTURES)> textureNames = {
 	"background.png", "kelp.png", "mg.png", "mg-dynamic.png", "fg.png", "fg-dynamic.png" };

@@ -11,7 +11,7 @@
 class FishManager
 {
 public:
-    FishManager(float minDist);
+    FishManager();
     ~FishManager();
 
     void CheckForNewFiles();
@@ -23,7 +23,6 @@ private:
     // these variables are used in CheckForNewfile
     std::unordered_set<std::string> fishFiles; // files (fingers crossed) loaded
     double lastTime; // last time when the fishDir was checked
-    static std::string fishDir; // where processing fish files are stored
     static float timeToWait; // how long to wait until checked for new files
     static int attempts; // spawm attempts
 

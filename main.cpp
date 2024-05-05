@@ -10,10 +10,6 @@ int main(int argc, char** argv)
 {
     const int screenWidth = GetScreenWidth();
     const int screenHeight = GetScreenHeight();
-    float dist = 2.0f;
-
-    if (argc == 2)
-	dist = atof(argv[1]);
 
     InitWindow(screenWidth, screenHeight, "fishy merry-go-round");
 
@@ -24,7 +20,7 @@ int main(int argc, char** argv)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
 
-    FishManager fm = FishManager(dist);
+    FishManager fm = FishManager();
     Environment env = Environment::instance();
         
     
