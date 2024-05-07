@@ -31,10 +31,9 @@ FishManager::~FishManager()
     UnloadShader(fishyShader);
 }
 
-void FishManager::updateMinDist()
+void FishManager::UpdateMinDist()
 {
     auto no = fishies.size();
-
     minDist = std::clamp(15.0/(1 + std::exp(no/40.0 - 0.5)), 1.2, 10.0);
 }
 
@@ -65,14 +64,25 @@ void FishManager::Update()
 	lastTime = GetTime();
     }
     
-    updateMinDist();
+    UpdateMinDist();
+}
+
+void FishManager::UpdateShaderUniforms(const std::array<float, 5>& values)
+{
+    SetShaderValue(fishyShader, GetShaderLocation(fishyShader, "swim_speed"), &values[0], SHADER_UNIFORM_FLOAT);
+    SetShaderValue(fishyShader, GetShaderLocation(fishyShader, "side_to_side"), &values[1], SHADER_UNIFORM_FLOAT);
+    SetShaderValue(fishyShader, GetShaderLocation(fishyShader, "pivot"), &values[2], SHADER_UNIFORM_FLOAT);
+    SetShaderValue(fishyShader, GetShaderLocation(fishyShader, "wave"), &values[3], SHADER_UNIFORM_FLOAT);
+    SetShaderValue(fishyShader, GetShaderLocation(fishyShader, "twist"), &values[4], SHADER_UNIFORM_FLOAT);
 }
 
 void FishManager::Draw()
 {
     rlDisableBackfaceCulling(); // Required to render texture on both sides of the plane
-    for(auto &fish: fishies)
+    for(auto &fish: fishies) {
+	UpdateShaderUniforms(fish->getValues());
 	fish->Draw();
+    }
     rlEnableBackfaceCulling();
 }
 
@@ -101,7 +111,7 @@ int FishManager::AttemptToAddFish(std::string filePath)
     
     if (found) {
 	offsets.x = -GetTime();
-	fishies.emplace_back(new Fish(offsets, axes, filePath, fishyShader, 0.02f ));
+	fishies.emplace_back(new Fish(offsets, axes, filePath, fishyShader, 0.02f));
 	return 0;
     }
 

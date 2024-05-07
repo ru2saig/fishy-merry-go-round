@@ -9,12 +9,12 @@ in vec4 vertexColor;
 // Input uniform values
 uniform mat4 mvp;
 uniform float time;
-uniform float swim_speed = 1.0;
-uniform float side_to_side = 0.1;
-uniform float pivot = 1.0;
-uniform float wave = .5;
+uniform float swim_speed = 1.0; // Index 0
+uniform float side_to_side = 0.1; // 1
+uniform float pivot = 1.0; // 2
+uniform float wave = .5; // 3
 uniform float waviness = 3.0;
-uniform float twist = 0.1;
+uniform float twist = 0.1; // 4
 uniform float mask_black = 0.0;
 uniform float mask_white = 1.0;
 uniform vec3 cameraPos;
@@ -35,6 +35,7 @@ void main()
     fragColor = vertexColor;
 
     // used to fade the color inversely proportional to the distance from the camera
+    // a plane was a better solution
     // vec3 distanceVec = cameraPos - vertexPos;
     // dist = END_FADE - min(max(START_FADE, dot(distanceVec, distanceVec)), END_FADE);
     // dist = (dist + START_FADE)/END_FADE;

@@ -7,6 +7,7 @@
 #include <vector>
 #include <string>
 #include <unordered_set>
+#include <array>
 
 class FishManager
 {
@@ -20,7 +21,8 @@ public:
     void Draw();
 
 private:
-    void updateMinDist(); // Dynamically minDist, according to the number of fish on screen
+    void UpdateMinDist(); // Dynamically minDist, according to the number of fish on screen
+    void UpdateShaderUniforms(const std::array<float, 5>& values); // Update shader uniforms
     
     std::unordered_set<std::string> fishFiles; // Files (fingers crossed) loaded
     std::vector<std::unique_ptr<Fish>> fishies; // unique::ptr is required or seg faults occur

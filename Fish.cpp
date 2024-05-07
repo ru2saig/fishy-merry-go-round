@@ -2,6 +2,7 @@
 #include <raylib.h>
 #include <raymath.h>
 #include <Utility.hpp>
+#include <rlgl.h>
 
 Fish::Fish(Vector2 offsets, Vector2 axes, std::string texturePath, Shader shader, float timeScale)
     : timeScale { timeScale }, axes { axes }, offsets { offsets }, pos { Vector3Zero() }
@@ -18,9 +19,15 @@ Fish::Fish(Vector2 offsets, Vector2 axes, std::string texturePath, Shader shader
     pos.z = axes.y * sin(-offsets.x * timeScale);
     pos.y = offsets.y;
 
-    fishMesh = Utility::GenMeshPlaneXY(1.0f, 1.0f, 5, 5); // TODO: Reduce these to 10? 15? 5?
+    fishMesh = Utility::GenMeshPlaneXY(1.0f, 1.0f, 7, 7);
 
     UnloadImage(fishImage);
+
+    uniformValues[0] = GetRandomValue(3, 10)/10.0f;
+    uniformValues[1] = GetRandomValue(10, 30)/100.0f;
+    uniformValues[2] = GetRandomValue(5, 10)/10.0f;
+    uniformValues[3] = GetRandomValue(30, 60)/100.0f;
+    uniformValues[4] = GetRandomValue(8, 12)/100.0f;
 }
 
 void Fish::Update(float t)
@@ -39,7 +46,6 @@ void Fish::Update(float t)
 void Fish::Draw()
 {
     DrawMesh(fishMesh, fishMat, transform);
-
     // A plane and the path for debugging purposes
     //DrawMesh(fishMesh, LoadMaterialDefault(), transform); // Yes, this is the fastest but least performant way to test stuff
     //for (double i = 0.0, step = 0.1; i < std::numbers::pi_v<double> * 2; i += step)
@@ -47,8 +53,9 @@ void Fish::Draw()
 }
 
 Fish::~Fish()
-{ // is one of these unloading the shader as well?
+{ 
     UnloadTexture(fishTex);
-    UnloadMesh(fishMesh);
+    fishMat.shader.id = rlGetShaderIdDefault(); // Prevents this from being unloaded; FishyManager unloads the shader
     UnloadMaterial(fishMat);
-}    
+    UnloadMesh(fishMesh);
+  }    

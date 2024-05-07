@@ -61,7 +61,7 @@ void Environment::Draw()
     rlPushMatrix();
     rlRotatef(-90.0, 0.0, 0.0, 1.0);
     // this "fades" further fish, couldn't get the shader to work, yet
-    DrawPlane(Vector3Zero(), Vector2 { 100.0f, 100.0f }, Color { 0, 0, 0, 50 }); // a dark, blueish gray
+    DrawPlane(Vector3Zero(), Vector2 { 100.0f, 100.0f }, Color { 0, 0, 0, 60 });
     rlPopMatrix();
 }
 
