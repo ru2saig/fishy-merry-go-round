@@ -1,5 +1,4 @@
-* Screenshots
-**crickets**
+TODO: Insert recording here
 
 * Dependency Installation
 The aquarium uses Raylib. Compile and install it (as a static library). For the latest information, check https://github.com/raysan5/raylib?tab=readme-ov-file#build-and-installation.
@@ -58,15 +57,16 @@ Here are the steps for that:
 ** Too Many Fish!
 Simply remove everything under resources/textures/ (zip them up somewhere) and run it again. TODO: Working on a better system for this, which automagically clears the fish.
 
-* TODO Artwork (ADD LICENSE FOR SHADERS, TOO)
+* Artwork
 All of the art in the zip files, and the textures under resources/textures is licensed under CC BY-SA 4.0. To view a copy of this license, visit https://creativecommons.org/licenses/by-sa/4.0/. 
 
 The fish templates were created by [[https://www.instagram.com/kottimira_worma/][@kottimira_worma]].
 
-The shaders (caustic.fs) is based off of [[https://www.shadertoy.com/view/4ljXWh][Beneath the Sea]] by [[https://www.shadertoy.com/user/zel][zel]]. Distributed with a CC BY-NC-SA 3.0Attribution-NonCommercial-ShareAlike 3.0 Unported. TO view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/.
+caustic.fs is based heavily on [[https://www.shadertoy.com/view/4ljXWh][Beneath the Sea]] by [[https://www.shadertoy.com/user/zel][zel]]. Distributed with a CC BY-NC-SA 3.0Attribution-NonCommercial-ShareAlike 3.0 Unported. To view a copy of this license, visit https://creativecommons.org/licenses/by-nc-sa/3.0/.
+
+rays.fs is based heavily on [[https://www.shadertoy.com/view/lljGDt][Light rays]] by [[https://www.shadertoy.com/user/ElusivePete][ElusivePete]].
 
  All the files in the zip's were templates coloured in by the visitors of MakerFaire Hyderabad 2023. One love <3 to everyone who contributed a fish (or two).
 
 * Credits
 T-Works for hosting the event and exhibit, and everyone who participated. Y'all are the best.
-

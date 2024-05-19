@@ -8,10 +8,7 @@
 
 int main(int argc, char** argv)
 {
-    const int screenWidth = GetScreenWidth();
-    const int screenHeight = GetScreenHeight();
-
-    InitWindow(screenWidth, screenHeight, "fishy merry-go-round");
+    InitWindow(GetScreenWidth(), GetScreenHeight(), "fishy merry-go-round");
 
     Camera camera = { 0 };
     camera.position = Vector3 { 25.0f, 0.0f, 0.0f };    // Camera position
@@ -20,15 +17,20 @@ int main(int argc, char** argv)
     camera.fovy = 45.0f;                                // Camera field-of-view Y
     camera.projection = CAMERA_PERSPECTIVE;             // Camera projection type
 
-    FishManager fm = FishManager();
-    Environment env = Environment::instance();
-        
-    
     SetTargetFPS(60);
     DisableCursor();
     ToggleFullscreen();
 
+    FishManager fm = FishManager();
+    Environment env = Environment::instance();
+    RenderTexture2D target = LoadRenderTexture(GetScreenWidth(), GetScreenHeight());
+    Shader rays = LoadShader(0, "resources/shaders/rays.fs");
 
+    int timeLoc = GetShaderLocation(rays, "time");
+    int resLoc = GetShaderLocation(rays, "res");
+    float res[2] = {(float) GetScreenWidth(), (float) GetScreenHeight()};
+    SetShaderValue(rays, resLoc, res, SHADER_UNIFORM_VEC2);
+        
     // Main game loop
     while (!WindowShouldClose()) {
 
@@ -36,9 +38,12 @@ int main(int argc, char** argv)
 	UpdateCameraPro(&camera, Vector3Zero(), Vector3Zero(), 0.0f);
 	fm.Update();
 	env.Update();
+
+	float time = GetTime();
+	SetShaderValue(rays, timeLoc, &time, SHADER_UNIFORM_FLOAT);
 				
 	// Draw
-	BeginDrawing();
+	BeginTextureMode(target);
 	ClearBackground(LIGHTGRAY);
 
 	BeginMode3D(camera);
@@ -47,10 +52,19 @@ int main(int argc, char** argv)
 	fm.Draw();
 
 	EndMode3D();
+	EndTextureMode();
+
+	BeginDrawing();
+	ClearBackground(LIGHTGRAY);
+	BeginShaderMode(rays);
+	DrawTextureRec(target.texture, { 0, 0, (float)target.texture.width, (float)-target.texture.height }, { 0, 0 }, LIGHTGRAY);
+	EndShaderMode();
 	EndDrawing();
+	
     }
 
-    CloseWindow();              // Close window and OpenGL context
-
+    CloseWindow();
+    UnloadShader(rays);
+    
     return 0;
 }
