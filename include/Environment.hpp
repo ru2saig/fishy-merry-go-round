@@ -30,8 +30,10 @@ private:
 
     Shader staticShader;
     Shader wiggleShader;
+    Shader causticShader;
     // locations of uniforms in the wiggle.vs
-    int timeLoc;
+    int timeLocWiggle;
+    int timeLocCaustic;
 };
 
 #endif /* _ENVIRONMENT_HPP_ */
