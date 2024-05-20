@@ -2,9 +2,9 @@
 Here's an not-so-satisfying GIF (that takes time to load) and a few screenshots:
 
 #+BEGIN_HTML
-<center>
+<p align="center">
 <img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/recording.gif" />
-</center>
+</p>
 
 <img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/emptyenv.png" />
 
