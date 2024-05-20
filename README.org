@@ -1,9 +1,24 @@
 * Fishy Merry-Go-Round
+Here's a GIF and a few screenshots:
 
+#+BEGIN_HTML
+<a href="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots">
+<img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/recording.gif" />
+</a>
 
+<a href="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots">
+<img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/emptyenv.png" />
+</a>
 
-Here's (about) a thousand more:
+<a href="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots">
+<img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/somefish.png" />
+</a>
 
+<a href="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots">
+<img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/morefish.png" />
+</a>
+
+#+END_HTML
 
 * Dependency Installation
 The aquarium uses Raylib. Compile and install it (as a static library). For the latest information, check https://github.com/raysan5/raylib?tab=readme-ov-file#build-and-installation.
