@@ -2,19 +2,17 @@
 Here's a GIF and a few screenshots:
 
 #+BEGIN_HTML
-<a href="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots">
+<div style="text-align:center;">
 <img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/recording.gif" />
 </a>
+</div>
 
-<a href="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots">
 <img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/emptyenv.png" />
 </a>
 
-<a href="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots">
 <img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/somefish.png" />
 </a>
 
-<a href="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots">
 <img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/morefish.png" />
 </a>
 
