@@ -20,6 +20,8 @@ Here's a GIF and a few screenshots:
 
 #+END_HTML
 
+I recommend you, dear reader, to watch the screen recording here: https://ru2saig.github.io/videos/recording.mp4.
+
 * Dependency Installation
 The aquarium uses Raylib. Compile and install it (as a static library). For the latest information, check https://github.com/raysan5/raylib?tab=readme-ov-file#build-and-installation.
 
