@@ -1,5 +1,5 @@
 * Fishy Merry-Go-Round
-Here's a GIF and a few screenshots:
+Here's an icky GIF (that takes time to load) and a few screenshots:
 
 #+BEGIN_HTML
 <div style="text-align:center;">
