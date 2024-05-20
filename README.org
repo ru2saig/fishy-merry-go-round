@@ -2,19 +2,15 @@
 Here's an not-so-satisfying GIF (that takes time to load) and a few screenshots:
 
 #+BEGIN_HTML
-<div style="text-align:center;">
+<center>
 <img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/recording.gif" />
-</a>
-</div>
+</center>
 
 <img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/emptyenv.png" />
-</a>
 
 <img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/somefish.png" />
-</a>
 
 <img src="https://github.com/ru2saig/fishy-merry-go-round/blob/master/resources/screenshots/morefish.png" />
-</a>
 
 #+END_HTML
 
